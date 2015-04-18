@@ -29,38 +29,40 @@ package echotutorial;
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 import java.net.*;
 import java.io.*;
 
 public class EchoServer {
-    public static void main(String[] args) throws IOException {
-        
-        if (args.length != 1) {
-            System.err.println("Usage: java EchoServer <port number>");
-            System.exit(1);
-        }
-        
-        int portNumber = Integer.parseInt(args[0]);
-        
-        try (
-            ServerSocket serverSocket =
-                new ServerSocket(portNumber);
-            Socket clientSocket = serverSocket.accept();     
-            PrintWriter out =
-                new PrintWriter(clientSocket.getOutputStream(), true);                   
-            BufferedReader in = new BufferedReader(
-                new InputStreamReader(clientSocket.getInputStream()));
-        ) {
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                out.println(inputLine);
-            }
-        } catch (IOException e) {
-            System.out.println("Exception caught when trying to listen on port "
-                + portNumber + " or listening for a connection");
-            System.out.println(e.getMessage());
-        }
-    }
+	public static void main(String[] args) throws IOException {
+
+		if (args.length != 1) {
+			System.err.println("Usage: java EchoServer <port number>");
+			System.exit(1);
+		}
+
+		int portNumber = Integer.parseInt(args[0]);
+
+		try {
+			ServerSocket serverSocket = new ServerSocket(portNumber);
+			System.out.println("# log information: before serverSocket.accept()\n");
+			Socket clientSocket = serverSocket.accept();
+			System.out.println("# log information: after serverSocket.accept()\n");
+
+			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
+					true);
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					clientSocket.getInputStream()));
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) {
+				out.println(inputLine);
+			}
+		} catch (IOException e) {
+			System.out
+					.println("Exception caught when trying to listen on port "
+							+ portNumber + " or listening for a connection");
+			System.out.println(e.getMessage());
+		}
+	}
 }
