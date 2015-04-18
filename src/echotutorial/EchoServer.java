@@ -60,6 +60,7 @@ public class EchoServer {
 				// convert to uppercase
 				out.println(inputLine.toUpperCase());
 			}
+			serverSocket.close();
 		} catch (IOException e) {
 			System.out
 					.println("Exception caught when trying to listen on port "
