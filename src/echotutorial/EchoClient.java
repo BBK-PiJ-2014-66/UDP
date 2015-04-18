@@ -48,9 +48,9 @@ public class EchoClient {
 
         try (
             Socket echoSocket = new Socket(hostName, portNumber);
-            PrintWriter out =
+            PrintWriter toServer =
                 new PrintWriter(echoSocket.getOutputStream(), true);
-            BufferedReader in =
+            BufferedReader fromServer =
                 new BufferedReader(
                     new InputStreamReader(echoSocket.getInputStream()));
             BufferedReader stdIn =
@@ -59,8 +59,10 @@ public class EchoClient {
         ) {
             String userInput;
             while ((userInput = stdIn.readLine()) != null) {
-                out.println(userInput);
-                System.out.println("echo: " + in.readLine());
+            	// supply the user input to the Server
+                toServer.println(userInput);
+                // get the info back from the Server
+                System.out.println("echo: " + fromServer.readLine());
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
