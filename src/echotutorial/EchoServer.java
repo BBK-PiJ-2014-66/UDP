@@ -48,7 +48,7 @@ public class EchoServer {
 			ServerSocket serverSocket = new ServerSocket(portNumber);
 			System.out.println("# log info: before serverSocket.accept()\n");
 			Socket clientSocket = serverSocket.accept();
-			System.out.println("# log infon: after serverSocket.accept()\n");
+			System.out.println("# log info: after serverSocket.accept()\n");
 
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
 					true);
