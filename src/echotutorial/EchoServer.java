@@ -46,9 +46,9 @@ public class EchoServer {
 
 		try {
 			ServerSocket serverSocket = new ServerSocket(portNumber);
-			System.out.println("# log information: before serverSocket.accept()\n");
+			System.out.println("# log info: before serverSocket.accept()\n");
 			Socket clientSocket = serverSocket.accept();
-			System.out.println("# log information: after serverSocket.accept()\n");
+			System.out.println("# log infon: after serverSocket.accept()\n");
 
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
 					true);
@@ -56,6 +56,7 @@ public class EchoServer {
 					clientSocket.getInputStream()));
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
+				System.out.println("log info: received '" + inputLine + "'");
 				out.println(inputLine);
 			}
 		} catch (IOException e) {
