@@ -62,7 +62,12 @@ public class EchoClient {
             	// supply the user input to the Server
                 toServer.println(userInput);
                 // get the info back from the Server
-                System.out.println("echo: " + fromServer.readLine());
+                String back = fromServer.readLine();
+                if (back == null) {
+                	System.out.println("Got back null - Server has terminated?");
+                	break; 
+                }
+                System.out.println("got back: '" + back + "'");
             }
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
