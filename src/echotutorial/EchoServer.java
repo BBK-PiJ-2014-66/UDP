@@ -46,9 +46,9 @@ public class EchoServer {
 
 		try {
 			ServerSocket serverSocket = new ServerSocket(portNumber);
-			System.out.println("# log info: before serverSocket.accept()\n");
+			System.out.println("# loginfo: before serverSocket.accept()");
 			Socket clientSocket = serverSocket.accept();
-			System.out.println("# log info: after serverSocket.accept()\n");
+			System.out.println("# loginfo: after serverSocket.accept()");
 
 			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
 					true);
@@ -56,8 +56,9 @@ public class EchoServer {
 					clientSocket.getInputStream()));
 			String inputLine;
 			while ((inputLine = in.readLine()) != null) {
-				System.out.println("log info: received '" + inputLine + "'");
-				out.println(inputLine);
+				System.out.println("# loginfo: received '" + inputLine + "'");
+				// convert to uppercase
+				out.println(inputLine.toUpperCase());
 			}
 		} catch (IOException e) {
 			System.out
