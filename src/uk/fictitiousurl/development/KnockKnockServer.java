@@ -1,3 +1,5 @@
+package uk.fictitiousurl.development;
+
 /*
  * Copyright (c) 1995, 2014, Oracle and/or its affiliates. All rights reserved.
  *
