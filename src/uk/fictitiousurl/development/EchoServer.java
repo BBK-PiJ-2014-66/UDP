@@ -34,7 +34,19 @@ package uk.fictitiousurl.development;
 import java.net.*;
 import java.io.*;
 
-public class EchoServer {
+/**
+*
+* Example TCP echo client adapted from
+* 
+* http://docs.oracle.com/javase/tutorial/networking/sockets/examples/EchoServer.java
+* 
+* run by 
+* 
+* java -cp bin uk.fictitiousurl.development.EchoClient localhost 7777
+* 
+* @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
+*
+*/public class EchoServer {
 	public static void main(String[] args) throws IOException {
 
 		if (args.length != 1) {
