@@ -1,4 +1,4 @@
-package echotutorial;
+package uk.fictitiousurl.development;
 
 /*
  * Copyright (c) 2013, Oracle and/or its affiliates. All rights reserved.
