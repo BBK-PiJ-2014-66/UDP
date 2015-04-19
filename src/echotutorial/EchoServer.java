@@ -50,15 +50,15 @@ public class EchoServer {
 			Socket clientSocket = serverSocket.accept();
 			System.out.println("# loginfo: after serverSocket.accept()");
 
-			PrintWriter out = new PrintWriter(clientSocket.getOutputStream(),
+			PrintWriter toClient = new PrintWriter(clientSocket.getOutputStream(),
 					true);
-			BufferedReader in = new BufferedReader(new InputStreamReader(
+			BufferedReader fromClient = new BufferedReader(new InputStreamReader(
 					clientSocket.getInputStream()));
 			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
+			while ((inputLine = fromClient.readLine()) != null) {
 				System.out.println("# loginfo: received '" + inputLine + "'");
 				// convert to uppercase
-				out.println(inputLine.toUpperCase());
+				toClient.println(inputLine.toUpperCase());
 			}
 			serverSocket.close();
 		} catch (IOException e) {
