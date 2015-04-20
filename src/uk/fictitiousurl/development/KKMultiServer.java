@@ -29,16 +29,18 @@ package uk.fictitiousurl.development;
  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */ 
+ */
 
 import java.net.*;
 import java.io.*;
 
 /**
  *
- * Example TCP server that uses threads to allow multiple clients to connect adapted from
+ * Example TCP server that uses threads to allow multiple clients to connect
+ * adapted from
  *
- * http://docs.oracle.com/javase/tutorial/networking/sockets/examples/KKMultiServer.java
+ * http://docs.oracle.com/javase/tutorial/networking/sockets/examples/
+ * KKMultiServer.java
  * 
  * run by
  * 
@@ -48,23 +50,23 @@ import java.io.*;
  *
  */
 public class KKMultiServer {
-    public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException {
 
-    if (args.length != 1) {
-        System.err.println("Usage: java KKMultiServer <port number>");
-        System.exit(1);
-    }
+		if (args.length != 1) {
+			System.err.println("Usage: java KKMultiServer <port number>");
+			System.exit(1);
+		}
 
-        int portNumber = Integer.parseInt(args[0]);
-        boolean listening = true;
-        
-        try (ServerSocket serverSocket = new ServerSocket(portNumber)) { 
-            while (listening) {
-	            new KKMultiServerThread(serverSocket.accept()).start();
-	        }
-	    } catch (IOException e) {
-            System.err.println("Could not listen on port " + portNumber);
-            System.exit(-1);
-        }
-    }
+		int portNumber = Integer.parseInt(args[0]);
+
+		try {
+			ServerSocket serverSocket = new ServerSocket(portNumber);
+			while (true) {
+				new KKMultiServerThread(serverSocket.accept()).start();
+			}
+		} catch (IOException e) {
+			System.err.println("Could not listen on port " + portNumber);
+			System.exit(-1);
+		}
+	}
 }
