@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import uk.fictitiousurl.development.KKMultiServerThread;
+
 /**
  * Server for client-application where clients send or receive looping audio.
  * 
@@ -32,8 +34,8 @@ public class Server {
 				Socket clientSocket = signalSocket.accept();
 				System.out.println("log: client " + connectionNumb
 						+ " has connected");
-				// TODO launch thread
-
+				// launch thread to handle this connection
+				new ServerClientHandling( clientSocket, connectionNumb).start();
 				connectionNumb++;
 			}
 		} catch (IOException ex) {
