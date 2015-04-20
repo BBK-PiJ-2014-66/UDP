@@ -1,3 +1,5 @@
+package uk.fictitiousurl.development;
+
 /*
  * Copyright (c) 1995, 2013, Oracle and/or its affiliates. All rights reserved.
  *
@@ -32,6 +34,19 @@
 import java.net.*;
 import java.io.*;
 
+/**
+ *
+ * Example TCP server that uses threads to allow multiple clients to connect adapted from
+ *
+ * http://docs.oracle.com/javase/tutorial/networking/sockets/examples/KKMultiServer.java
+ * 
+ * run by
+ * 
+ * java -cp bin uk.fictitiousurl.development.KKMultiServer7777
+ * 
+ * @author Oracle adapted by Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
+ *
+ */
 public class KKMultiServer {
     public static void main(String[] args) throws IOException {
 
