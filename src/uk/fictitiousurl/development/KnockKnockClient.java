@@ -34,6 +34,19 @@ package uk.fictitiousurl.development;
 import java.io.*;
 import java.net.*;
 
+/**
+*
+* Example TCP client adapted from
+* 
+* http://docs.oracle.com/javase/tutorial/networking/sockets/examples/KnockKnockServer.java
+* 
+* run by
+* 
+* java -cp bin uk.fictitiousurl.development.KnockKnockClient localhost 7777
+* 
+* @author Oracle adapted by Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
+*
+*/
 public class KnockKnockClient {
     public static void main(String[] args) throws IOException {
         
@@ -48,24 +61,24 @@ public class KnockKnockClient {
 
         try (
             Socket kkSocket = new Socket(hostName, portNumber);
-            PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(
+            PrintWriter pwToServer = new PrintWriter(kkSocket.getOutputStream(), true);
+            BufferedReader brFromServer = new BufferedReader(
                 new InputStreamReader(kkSocket.getInputStream()));
         ) {
             BufferedReader stdIn =
                 new BufferedReader(new InputStreamReader(System.in));
-            String fromServer;
-            String fromUser;
+            String strFromServer;
+            String strFromUser;
 
-            while ((fromServer = in.readLine()) != null) {
-                System.out.println("Server: " + fromServer);
-                if (fromServer.equals("Bye."))
+            while ((strFromServer = brFromServer.readLine()) != null) {
+                System.out.println("Server: " + strFromServer);
+                if (strFromServer.equals("Bye."))
                     break;
                 
-                fromUser = stdIn.readLine();
-                if (fromUser != null) {
-                    System.out.println("Client: " + fromUser);
-                    out.println(fromUser);
+                strFromUser = stdIn.readLine();
+                if (strFromUser != null) {
+                    System.out.println("Client: " + strFromUser);
+                    pwToServer.println(strFromUser);
                 }
             }
         } catch (UnknownHostException e) {

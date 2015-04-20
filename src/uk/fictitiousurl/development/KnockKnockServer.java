@@ -42,7 +42,7 @@ import java.io.*;
  * 
  * run by
  * 
- * java -cp bin uk.fictitiousurl.development.EchoClient localhost 7777
+ *  java -cp bin  uk.fictitiousurl.development.KnockKnockServer 7777
  * 
  * @author Oracle adapted by Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  *
