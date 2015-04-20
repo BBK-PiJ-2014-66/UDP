@@ -31,7 +31,18 @@ package uk.fictitiousurl.development;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-
+/**
+ * From http://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
+ * description given:
+ *  
+ * "The class KnockKnockProtocol serves up the jokes. It keeps track of the
+ * current joke, the current state (sent knock knock, sent clue, and so on), and
+ * returns the various text pieces of the joke depending on the current state.
+ * This object implements the protocol—the language that the client and server
+ * have agreed to use to communicate."
+ * 
+ * @author Oracle adapted by Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
+*/
 public class KnockKnockProtocol {
     private static final int WAITING = 0;
     private static final int SENTKNOCKKNOCK = 1;
@@ -50,6 +61,14 @@ public class KnockKnockProtocol {
                                  "Is there an owl in here?",
                                  "Is there an echo in here?" };
 
+	/**
+	 * processes the input string from the client. The result depends on the
+	 * current "state" and often the "currentJoke".
+	 * 
+	 * @param theInput
+	 *            the input provided by the client
+	 * @return the server's response
+	 */
     public String processInput(String theInput) {
         String theOutput = null;
 
