@@ -47,9 +47,9 @@ public class KnockKnockServer {
         try ( 
             ServerSocket serverSocket = new ServerSocket(portNumber);
             Socket clientSocket = serverSocket.accept();
-            PrintWriter out =
+            PrintWriter toClient =
                 new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(
+            BufferedReader fromClient = new BufferedReader(
                 new InputStreamReader(clientSocket.getInputStream()));
         ) {
         
@@ -58,11 +58,11 @@ public class KnockKnockServer {
             // Initiate conversation with client
             KnockKnockProtocol kkp = new KnockKnockProtocol();
             outputLine = kkp.processInput(null);
-            out.println(outputLine);
+            toClient.println(outputLine);
 
-            while ((inputLine = in.readLine()) != null) {
+            while ((inputLine = fromClient.readLine()) != null) {
                 outputLine = kkp.processInput(inputLine);
-                out.println(outputLine);
+                toClient.println(outputLine);
                 if (outputLine.equals("Bye."))
                     break;
             }
