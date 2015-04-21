@@ -24,6 +24,7 @@ public class Server {
 
 	public void launch() {
 		try {
+			@SuppressWarnings("resource") // never close signalSocket
 			ServerSocket signalSocket = new ServerSocket(PORTSIGNAL);
 			int connectionNumb = 0;
 			while (true) {
