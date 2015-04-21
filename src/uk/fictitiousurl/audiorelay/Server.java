@@ -21,7 +21,7 @@ public class Server {
 	public void launch() {
 		try {
 			@SuppressWarnings("resource") // never close signalSocket
-			ServerSocket signalSocket = new ServerSocket(Ports.PORTSIGNAL);
+			ServerSocket signalSocket = new ServerSocket(Ports.SIGNAL);
 			int connectionNumb = 0;
 			while (true) {
 				System.out.println("log: waiting for client " + connectionNumb

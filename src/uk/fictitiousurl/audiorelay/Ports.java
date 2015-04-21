@@ -10,6 +10,6 @@ public class Ports {
 	/**
 	 * the port number for the TCP connection used for signalling
 	 */
-	public static int PORTSIGNAL = 7777;
+	public static int SIGNAL = 7777;
 
 }

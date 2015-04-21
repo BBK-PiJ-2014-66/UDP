@@ -36,21 +36,23 @@ public class Client {
 	public void launch(String hostname) {
 		Socket clientSocket;
 		try {
-			clientSocket = new Socket(hostname, Ports.PORTSIGNAL);
+			clientSocket = new Socket(hostname, Ports.SIGNAL);
 		} catch (UnknownHostException ex) {
 			System.err.println("ERROR UnknownHostException caught "
-					+ "trying to create new socket on port " + Ports.PORTSIGNAL
+					+ "trying to create new socket on port " + Ports.SIGNAL
 					+ "   details: " + ex.getMessage());
 			return;
 		} catch (IOException ex) {
 			System.err.println("ERROR IOException caught "
-					+ "trying to create new socket on port " + Ports.PORTSIGNAL
+					+ "trying to create new socket on port " + Ports.SIGNAL
 					+ "   details: " + ex.getMessage());
 			return;
 
 		}
 		System.out.println("log: connected to host " + hostname
-				+ " port number " + Ports.PORTSIGNAL);
+				+ " port number " + Ports.SIGNAL);
+		
+		
 		
 	}
 
