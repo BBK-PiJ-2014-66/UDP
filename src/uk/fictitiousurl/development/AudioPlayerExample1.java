@@ -1,4 +1,4 @@
-package net.codejava.sound;
+package uk.fictitiousurl.development;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +90,7 @@ public class AudioPlayerExample1 implements LineListener {
 	}
 
 	public static void main(String[] args) {
-		String audioFilePath = "E:/Test/Audio.wav";
+		String audioFilePath = "./audioFiles/A.wav";
 		AudioPlayerExample1 player = new AudioPlayerExample1();
 		player.play(audioFilePath);
 	}
