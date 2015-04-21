@@ -12,10 +12,6 @@ import java.net.Socket;
  */
 public class Server {
 
-	/**
-	 * the port number for the TCP connection used for signalling
-	 */
-	private static int PORTSIGNAL = 7777;
 
 	public static void main(String[] args) {
 		Server theServer = new Server();
@@ -25,7 +21,7 @@ public class Server {
 	public void launch() {
 		try {
 			@SuppressWarnings("resource") // never close signalSocket
-			ServerSocket signalSocket = new ServerSocket(PORTSIGNAL);
+			ServerSocket signalSocket = new ServerSocket(Ports.PORTSIGNAL);
 			int connectionNumb = 0;
 			while (true) {
 				System.out.println("log: waiting for client " + connectionNumb
