@@ -90,7 +90,7 @@ public class AudioPlayerExample1 implements LineListener {
 	}
 
 	public static void main(String[] args) {
-		String audioFilePath = "./audioFiles/A.wav";
+		String audioFilePath = "./audioFiles/A.aiff";
 		AudioPlayerExample1 player = new AudioPlayerExample1();
 		player.play(audioFilePath);
 	}
