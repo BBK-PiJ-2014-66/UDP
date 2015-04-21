@@ -1,5 +1,8 @@
 package uk.fictitiousurl.audiorelay;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.Socket;
 
 /**
@@ -25,6 +28,21 @@ public class ServerClientHandling extends Thread {
 
 	public void run() {
 		System.out.println("log_connection_id_" + id + ": starting thread");
+
+		BufferedReader fromClient; // to get text instructions from client
+		try {
+			fromClient = new BufferedReader(new InputStreamReader(
+					signalSocket.getInputStream()));
+			String clientSentence = fromClient.readLine();
+			System.out.println("log_connection_id_" + id + " Received: "
+					+ clientSentence);
+
+		} catch (IOException ex) {
+			System.err.println("ERROR connect_id_" + id
+					+ " IOException caught on signalSocket details: "
+					+ ex.getMessage());
+			return; //
+		}
 
 		System.out.println("log_connection_id_" + id + ": ending thread");
 	}
