@@ -40,6 +40,7 @@ public class Client {
 		// First setup the signal communication socket, writer and reader
 		PrintWriter toServer;
 		BufferedReader fromServer;
+		Mode mode;
 		try (Socket clientSocket = new Socket(hostname, Ports.SIGNAL);) {
 			toServer = new PrintWriter(clientSocket.getOutputStream(), true);
 			fromServer = new BufferedReader(new InputStreamReader(
@@ -47,7 +48,7 @@ public class Client {
 
 			System.out.println("log: connected to host " + hostname
 					+ " port number " + Ports.SIGNAL);
-			// First ask for ID
+			// ask for ID
 			System.out.println("log: asking for ID");
 			toServer.println("askID");
 			// get the info back from the Server
@@ -59,6 +60,22 @@ public class Client {
 						+ " instead got '" + id + "'");
 				return;
 			}
+			// ask for sender/receiver mode
+			System.out.println("log: asking for mode");
+			toServer.println("askMode");
+			String reply = fromServer.readLine();
+			if (Mode.SENDER.name().equals(reply)) {
+				mode = Mode.SENDER;
+			} else if (Mode.RECEIVER.name().equals(reply)) {
+				mode = Mode.RECEIVER;
+			} else {
+				System.err.println("ERROR 'askMode' failed to get back valid mode,"
+						+ " instead got '" + reply + "'");
+				return;
+			}
+			System.out.println("log: mode is " + mode);
+			
+			// TODO implement sender/receiver functionality
 
 		} catch (UnknownHostException ex) {
 			System.err.println("ERROR UnknownHostException caught "

@@ -36,19 +36,42 @@ public class ServerClientHandling extends Thread {
 			fromClient = new BufferedReader(new InputStreamReader(
 					signalSocket.getInputStream()));
 			toClient = new PrintWriter(signalSocket.getOutputStream(), true);
-			String clientSentence = fromClient.readLine();
+			String clientAsk = fromClient.readLine();
 			System.out.println("log_connection_id_" + id + ": received: "
-					+ clientSentence);
+					+ clientAsk);
 			// client must first ask for its ID
-			if ("askID".equals(clientSentence)) {
+			if ("askID".equals(clientAsk)) {
 				toClient.println(id);
-				System.out.println("log_connection_id_" + id + ": sent back id");
+				System.out
+						.println("log_connection_id_" + id + ": sent back id");
 			} else {
 				System.err.println("ERROR for connection_id_" + id
 						+ " failed to send 'askID'" + " instead sent '"
-						+ clientSentence + "'");
+						+ clientAsk + "'");
 				return;
 			}
+			// then the mode
+			clientAsk = fromClient.readLine();
+			System.out.println("log_connection_id_" + id + ": received: "
+					+ clientAsk);
+			if ("askMode".equals(clientAsk)) {
+				String reply;
+				if (id == 0) { // first client is the sender TODO (for now)
+					reply = Mode.SENDER.name();
+				} else {
+					reply = Mode.RECEIVER.name();
+				}
+				toClient.println(reply);
+				System.out
+						.println("log_connection_id_" + id + ": sent back " + reply);
+			} else {
+				System.err.println("ERROR for connection_id_" + id
+						+ " failed to send 'askID'" + " instead sent '"
+						+ clientAsk + "'");
+				return;
+			}
+			
+			// TODO implement UDP audio handling
 
 		} catch (IOException ex) {
 			System.err.println("ERROR connect_id_" + id
