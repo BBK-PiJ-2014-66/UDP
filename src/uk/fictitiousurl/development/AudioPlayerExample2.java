@@ -1,4 +1,4 @@
-package net.codejava.sound;
+package uk.fictitiousurl.development;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 /**
  * This is an example program that demonstrates how to play back an audio file
  * using the SourceDataLine in Java Sound API.
+ * 
  * @author www.codejava.net
  *
  */
@@ -21,41 +22,45 @@ public class AudioPlayerExample2 {
 
 	// size of the byte buffer used to read/write the audio stream
 	private static final int BUFFER_SIZE = 4096;
-	
+
 	/**
 	 * Play a given audio file.
-	 * @param audioFilePath Path of the audio file.
+	 * 
+	 * @param audioFilePath
+	 *            Path of the audio file.
 	 */
 	void play(String audioFilePath) {
 		File audioFile = new File(audioFilePath);
 		try {
-			AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+			AudioInputStream audioStream = AudioSystem
+					.getAudioInputStream(audioFile);
 
 			AudioFormat format = audioStream.getFormat();
 
 			DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 
-			SourceDataLine audioLine = (SourceDataLine) AudioSystem.getLine(info);
+			SourceDataLine audioLine = (SourceDataLine) AudioSystem
+					.getLine(info);
 
 			audioLine.open(format);
 
 			audioLine.start();
-			
+
 			System.out.println("Playback started.");
-			
+
 			byte[] bytesBuffer = new byte[BUFFER_SIZE];
 			int bytesRead = -1;
 
 			while ((bytesRead = audioStream.read(bytesBuffer)) != -1) {
 				audioLine.write(bytesBuffer, 0, bytesRead);
 			}
-			
+
 			audioLine.drain();
 			audioLine.close();
 			audioStream.close();
-			
+
 			System.out.println("Playback completed.");
-			
+
 		} catch (UnsupportedAudioFileException ex) {
 			System.out.println("The specified audio file is not supported.");
 			ex.printStackTrace();
@@ -65,13 +70,16 @@ public class AudioPlayerExample2 {
 		} catch (IOException ex) {
 			System.out.println("Error playing the audio file.");
 			ex.printStackTrace();
-		}		
+		}
 	}
-	
+
 	public static void main(String[] args) {
-		String audioFilePath = "E:/Test/Audio.wav";
-		AudioPlayerExample1 player = new AudioPlayerExample1();
-		player.play(audioFilePath);
+		AudioPlayerExample2 player = new AudioPlayerExample2();
+		for (int i = 0; i < 10; i++) { // ten times
+			player.play("./audioFiles/A.aiff");
+			player.play("./audioFiles/B.aiff");
+			player.play("./audioFiles/C.aiff");
+		}
 	}
 
 }
