@@ -1,5 +1,9 @@
 package uk.fictitiousurl.audiorelay;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 /**
  * The Client for client-application where clients send or receive looping
  * audio.
@@ -30,8 +34,24 @@ public class Client {
 	}
 
 	public void launch(String hostname) {
-		System.out.println("debug using hostname " + hostname);
+		Socket clientSocket;
+		try {
+			clientSocket = new Socket(hostname, Ports.PORTSIGNAL);
+		} catch (UnknownHostException ex) {
+			System.err.println("ERROR UnknownHostException caught "
+					+ "trying to create new socket on port " + Ports.PORTSIGNAL
+					+ "   details: " + ex.getMessage());
+			return;
+		} catch (IOException ex) {
+			System.err.println("ERROR IOException caught "
+					+ "trying to create new socket on port " + Ports.PORTSIGNAL
+					+ "   details: " + ex.getMessage());
+			return;
 
+		}
+		System.out.println("log: connected to host " + hostname
+				+ " port number " + Ports.PORTSIGNAL);
+		
 	}
 
 }
