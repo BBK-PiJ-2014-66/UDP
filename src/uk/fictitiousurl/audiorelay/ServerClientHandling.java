@@ -3,6 +3,7 @@ package uk.fictitiousurl.audiorelay;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 /**
@@ -29,13 +30,25 @@ public class ServerClientHandling extends Thread {
 	public void run() {
 		System.out.println("log_connection_id_" + id + ": starting thread");
 
-		BufferedReader fromClient; // to get text instructions from client
+		BufferedReader fromClient; // to get text instructions from the client
+		PrintWriter toClient; // to send replies to the client
 		try {
 			fromClient = new BufferedReader(new InputStreamReader(
 					signalSocket.getInputStream()));
+			toClient = new PrintWriter(signalSocket.getOutputStream(), true);
 			String clientSentence = fromClient.readLine();
-			System.out.println("log_connection_id_" + id + " Received: "
+			System.out.println("log_connection_id_" + id + ": received: "
 					+ clientSentence);
+			// client must first ask for its ID
+			if ("askID".equals(clientSentence)) {
+				toClient.println(id);
+				System.out.println("log_connection_id_" + id + ": sent back id");
+			} else {
+				System.err.println("ERROR for connection_id_" + id
+						+ " failed to send 'askID'" + " instead sent '"
+						+ clientSentence + "'");
+				return;
+			}
 
 		} catch (IOException ex) {
 			System.err.println("ERROR connect_id_" + id

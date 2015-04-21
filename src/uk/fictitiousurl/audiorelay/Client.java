@@ -51,8 +51,14 @@ public class Client {
 			System.out.println("log: asking for ID");
 			toServer.println("askID");
 			// get the info back from the Server
-			String back = fromServer.readLine();
-			System.out.println("log: got back " + back);
+			String id = fromServer.readLine();
+			if (id.matches("\\d+")) { // one or more digits
+				System.out.println("log: got back valid ID = '" + id + "'");
+			} else {
+				System.err.println("ERROR failed to get back valid ID,"
+						+ " instead got '" + id + "'");
+				return;
+			}
 
 		} catch (UnknownHostException ex) {
 			System.err.println("ERROR UnknownHostException caught "
