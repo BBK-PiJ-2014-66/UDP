@@ -1,4 +1,4 @@
-package udp;
+package uk.fictitiousurl.development;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
