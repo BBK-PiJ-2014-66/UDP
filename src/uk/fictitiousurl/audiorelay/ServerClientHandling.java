@@ -14,12 +14,12 @@ import java.net.Socket;
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  */
 public class ServerClientHandling extends Thread {
-	private Socket socket = null;
+	private Socket signalSocket = null;
 	private int id;
 
-	public ServerClientHandling(Socket socket, int id) {
+	public ServerClientHandling(Socket signalSocket, int id) {
 		super("ServerThread");
-		this.socket = socket;
+		this.signalSocket = signalSocket;
 		this.id = id;
 	}
 
