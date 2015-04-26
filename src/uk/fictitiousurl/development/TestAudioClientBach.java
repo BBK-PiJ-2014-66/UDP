@@ -15,10 +15,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import uk.fictitiousurl.audiorelay.AudioRecord;
 
 /**
- * Initial test client to receive and play sound over a UDP connection. 
- * 
- * @see uk.fictitiousurl.development.TestAudioServer TestAudioServer for the
- *      server
+ * Client for more ambitious attempt to send audio over UDP - send 9 seconds of
+ * Bach Cello.
  * 
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  *
@@ -32,7 +30,6 @@ public class TestAudioClientBach {
 		AudioFormat format = Bach1.getAudioFormat();
 
 		byte[] receiveData = new byte[100000]; // over dimensioned
-
 
 		// try with resources
 		try (DatagramSocket clientSocket = new DatagramSocket()) {

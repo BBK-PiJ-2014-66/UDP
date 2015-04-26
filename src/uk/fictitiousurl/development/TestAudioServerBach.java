@@ -12,12 +12,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import uk.fictitiousurl.audiorelay.AudioRecord;
 
 /**
- * First attempt to send audio data by UDP, based on Keith's echo server sending
- * a byte array with the sound information rather than text.
+ * Server for more ambitious attempt to send audio over UDP - send 9 seconds of
+ * Bach Cello.
  * 
- * @see uk.fictitiousurl.development.TestAudioClient TestAudioClient for the
- *      corresponding client.
-
+ * @see uk.fictitiousurl.development.TestAudioClientBach TestAudioClientBach for
+ *      the corresponding client.
+ * 
  * 
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  *
@@ -25,13 +25,13 @@ import uk.fictitiousurl.audiorelay.AudioRecord;
 public class TestAudioServerBach {
 	public static void main(String args[]) throws Exception {
 
-		
 		AudioRecord Bach[] = new AudioRecord[9];
 		for (int ic = 0; ic < 9; ic++) {
 			Bach[ic] = new AudioRecord("./audioFiles/Bach" + (ic + 1) + ".wav");
 		}
-		
-		System.out.println("9 seconds of Bach loaded, format is " + Bach[0].getAudioFormat());
+
+		System.out.println("9 seconds of Bach loaded, format is "
+				+ Bach[0].getAudioFormat());
 
 		DatagramSocket serverSocket = new DatagramSocket(2000);
 
@@ -53,15 +53,15 @@ public class TestAudioServerBach {
 
 			if ("STOP".equals(instruction)) {
 				break;
-			} else	if ("SEND".equals(instruction)) {
+			} else if ("SEND".equals(instruction)) {
 				/*
-                 * send Bach in sequence
+				 * send Bach in sequence
 				 */
-				byte[] tByte = Bach[(count%9)].getBytes();
+				byte[] tByte = Bach[(count % 9)].getBytes();
 				DatagramPacket sendPacket = new DatagramPacket(tByte,
 						tByte.length, IPAddress, port);
 				serverSocket.send(sendPacket);
-			
+
 			} else {
 				System.err.println("ERROR unrecognized instruction '"
 						+ instruction + "' will ignore it");
@@ -69,6 +69,6 @@ public class TestAudioServerBach {
 			count++;
 		}
 
-		//serverSocket.close();
+		// serverSocket.close();
 	}
 }
