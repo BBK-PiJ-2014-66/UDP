@@ -17,6 +17,12 @@ import java.net.UnknownHostException;
 public class Client {
 
 	/**
+	 * identity, initially set to no-meaningful value, Server will provide value
+	 * greater than or equal to zero
+	 */
+	private int id = -1;
+
+	/**
 	 * The user can specify an optional hostname as a command line argument. If
 	 * they do not specify a value use the default value "localhost".
 	 * 
@@ -52,16 +58,17 @@ public class Client {
 			System.out.println("log: asking for ID");
 			toServer.println("askID");
 			// get the info back from the Server
-			String id = fromServer.readLine();
-			if (id.matches("\\d+")) { // one or more digits
-				System.out.println("log: got back valid ID = '" + id + "'");
-			} else {
+			String strID = fromServer.readLine();
+			if (!strID.matches("\\d+")) { // one or more digits
 				System.err.println("ERROR failed to get back valid ID,"
-						+ " instead got '" + id + "'");
+						+ " instead got '" + strID + "'");
 				return;
 			}
+			id = Integer.parseInt(strID);
+			System.out.println("log_id_" + id + ": got back valid ID = '"
+					+ strID + "'");
 			// ask for sender/receiver mode
-			System.out.println("log: asking for mode");
+			System.out.println("log_id_" + id + ": asking for mode");
 			toServer.println("askMode");
 			String reply = fromServer.readLine();
 			if (Mode.SENDER.name().equals(reply)) {
@@ -74,7 +81,7 @@ public class Client {
 								+ " instead got '" + reply + "'");
 				return;
 			}
-			System.out.println("log: mode is " + mode);
+			System.out.println("log_id_" + id + ": mode is " + mode);
 			if (mode == Mode.SENDER) {
 				sender();
 			}
@@ -103,9 +110,9 @@ public class Client {
 					+ ".wav");
 
 		}
-		System.out.println("log: sender mode\n"
-				+ "log: test audio 9 seconds of Bach loaded in 1 sec chunks\n"
-				+ "log: audio format is " + Sounds[0].getAudioFormat());
-
+		System.out.println("log_id_" + id
+				+ ": test audio 9 seconds of Bach loaded in 1 sec chunks");
+		System.out.println("log_id_" + id + ": audio format is "
+				+ Sounds[0].getAudioFormat());
 	}
 }
