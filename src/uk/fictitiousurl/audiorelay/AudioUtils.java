@@ -1,8 +1,11 @@
 package uk.fictitiousurl.audiorelay;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -84,10 +87,12 @@ public class AudioUtils {
 	}
 
 	/**
-	 * Play back stored audio 
+	 * Play back stored audio
 	 * 
-	 * @param format the format 
-	 * @param bytes  byte array with the contents
+	 * @param format
+	 *            the format
+	 * @param bytes
+	 *            byte array with the contents
 	 * @throws LineUnavailableException
 	 */
 	public static void playBack(AudioFormat format, byte[] bytes)
@@ -100,5 +105,28 @@ public class AudioUtils {
 		audioLine.drain();
 		audioLine.close();
 
+	}
+
+	/**
+	 * use java serialization to encode an AudioFormat as a byte array.
+	 * 
+	 * @param format
+	 *            the audio format to encode
+	 * @return the byte array
+	 * @throw RuntimeException if the is a problem
+	 */
+	public static byte[] audioFormat2ByteArray(AudioFormat format) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos;
+		try {
+			oos = new ObjectOutputStream(baos);
+			oos.writeObject(format);
+			oos.close();
+			return baos.toByteArray();
+		} catch (IOException ex) {
+			throw new RuntimeException("ERROR in using java serialization"
+					+ " to encode audio format to byte array." + " Details: "
+					+ ex.getMessage());
+		}
 	}
 }
