@@ -20,6 +20,14 @@ import java.net.Socket;
 public class ServerClientHandling extends Thread {
 	private Socket signalSocket = null;
 	private int id;
+	/**
+	 * to get text instructions from the client
+	 */
+	private BufferedReader fromClient;
+	/**
+	 *  to send replies to the client 
+	 */
+	private PrintWriter toClient;
 
 	public ServerClientHandling(Socket signalSocket, int id) {
 		super("ServerThread");
@@ -30,8 +38,6 @@ public class ServerClientHandling extends Thread {
 	public void run() {
 		System.out.println("log_connection_id_" + id + ": starting thread");
 
-		BufferedReader fromClient; // to get text instructions from the client
-		PrintWriter toClient; // to send replies to the client
 		try {
 			fromClient = new BufferedReader(new InputStreamReader(
 					signalSocket.getInputStream()));
@@ -51,24 +57,24 @@ public class ServerClientHandling extends Thread {
 				return;
 			}
 			// then the mode
-            Mode serverMode = Mode.RECEIVER;
-            if (id== 0)
-            	serverMode = Mode.SENDER;
+			Mode serverMode = Mode.RECEIVER;
+			if (id == 0)
+				serverMode = Mode.SENDER;
 			clientAsk = fromClient.readLine();
 			System.out.println("log_connection_id_" + id + ": received: "
 					+ clientAsk);
 			if ("askMode".equals(clientAsk)) {
 				String reply = serverMode.name();
 				toClient.println(reply);
-				System.out
-						.println("log_connection_id_" + id + ": sent back " + reply);
+				System.out.println("log_connection_id_" + id + ": sent back "
+						+ reply);
 			} else {
 				System.err.println("ERROR for connection_id_" + id
 						+ " failed to send 'askID'" + " instead sent '"
 						+ clientAsk + "'");
 				return;
 			}
-			
+
 			if (serverMode == Mode.SENDER) {
 				sender();
 			} else {
@@ -85,12 +91,19 @@ public class ServerClientHandling extends Thread {
 		System.out.println("log_connection_id_" + id + ": ending thread");
 	}
 
-	public void sender() {
+	/**
+	 * the client is a sender.
+	 * @throws IOException 
+	 */
+	public void sender() throws IOException {
+		// must first get the audio format back
+		String tempAF = fromClient.readLine();
+		System.out.println("debug string audioformat" + tempAF);
 		System.out.println("sender to be written"); // TODO
 	}
-	
+
 	public void receiver() {
 		System.out.println("receiver to be written"); // TODO
 	}
-	
+
 }

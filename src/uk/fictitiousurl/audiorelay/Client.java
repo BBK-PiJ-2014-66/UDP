@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.sound.sampled.AudioFormat;
+
 /**
  * The Client for client-application where clients send or receive looping
  * audio.
@@ -21,6 +23,9 @@ public class Client {
 	 * greater than or equal to zero
 	 */
 	private int id = -1;
+
+	private PrintWriter toServer;
+	private BufferedReader fromServer;
 
 	/**
 	 * The user can specify an optional hostname as a command line argument. If
@@ -44,8 +49,6 @@ public class Client {
 
 	public void launch(String hostname) {
 		// First setup the signal communication socket, writer and reader
-		PrintWriter toServer;
-		BufferedReader fromServer;
 		Mode mode;
 		try (Socket clientSocket = new Socket(hostname, Ports.SIGNAL);) {
 			toServer = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -110,9 +113,14 @@ public class Client {
 					+ ".wav");
 
 		}
+
+		AudioFormat audioformat = Sounds[0].getAudioFormat();
+
 		System.out.println("log_id_" + id
 				+ ": test audio 9 seconds of Bach loaded in 1 sec chunks");
-		System.out.println("log_id_" + id + ": audio format is "
-				+ Sounds[0].getAudioFormat());
+		System.out.println("log_id_" + id + ": audio format is " + audioformat);
+		toServer.println(audioformat);
+		
+
 	}
 }
