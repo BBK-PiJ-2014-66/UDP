@@ -51,16 +51,14 @@ public class ServerClientHandling extends Thread {
 				return;
 			}
 			// then the mode
+            Mode serverMode = Mode.RECEIVER;
+            if (id== 0)
+            	serverMode = Mode.SENDER;
 			clientAsk = fromClient.readLine();
 			System.out.println("log_connection_id_" + id + ": received: "
 					+ clientAsk);
 			if ("askMode".equals(clientAsk)) {
-				String reply;
-				if (id == 0) { // first client is the sender TODO (for now)
-					reply = Mode.SENDER.name();
-				} else {
-					reply = Mode.RECEIVER.name();
-				}
+				String reply = serverMode.name();
 				toClient.println(reply);
 				System.out
 						.println("log_connection_id_" + id + ": sent back " + reply);
@@ -71,7 +69,11 @@ public class ServerClientHandling extends Thread {
 				return;
 			}
 			
-			// TODO implement UDP audio handling
+			if (serverMode == Mode.SENDER) {
+				sender();
+			} else {
+				receiver();
+			}
 
 		} catch (IOException ex) {
 			System.err.println("ERROR connect_id_" + id
@@ -83,4 +85,12 @@ public class ServerClientHandling extends Thread {
 		System.out.println("log_connection_id_" + id + ": ending thread");
 	}
 
+	public void sender() {
+		System.out.println("sender to be written"); // TODO
+	}
+	
+	public void receiver() {
+		System.out.println("receiver to be written"); // TODO
+	}
+	
 }
