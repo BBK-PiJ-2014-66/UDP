@@ -69,13 +69,15 @@ public class Client {
 			} else if (Mode.RECEIVER.name().equals(reply)) {
 				mode = Mode.RECEIVER;
 			} else {
-				System.err.println("ERROR 'askMode' failed to get back valid mode,"
-						+ " instead got '" + reply + "'");
+				System.err
+						.println("ERROR 'askMode' failed to get back valid mode,"
+								+ " instead got '" + reply + "'");
 				return;
 			}
 			System.out.println("log: mode is " + mode);
-			
-			// TODO implement sender/receiver functionality
+			if (mode == Mode.SENDER) {
+				sender();
+			}
 
 		} catch (UnknownHostException ex) {
 			System.err.println("ERROR UnknownHostException caught "
@@ -90,6 +92,20 @@ public class Client {
 			return;
 
 		}
+
+	}
+
+	private void sender() {
+		// Load test audio data 9 seconds of Bach
+		AudioRecord Sounds[] = new AudioRecord[9];
+		for (int ic = 0; ic < 9; ic++) {
+			Sounds[ic] = new AudioRecord("./audioFiles/Bach" + (ic + 1)
+					+ ".wav");
+
+		}
+		System.out.println("log: sender mode\n"
+				+ "log: test audio 9 seconds of Bach loaded in 1 sec chunks\n"
+				+ "log: audio format is " + Sounds[0].getAudioFormat());
 
 	}
 }
