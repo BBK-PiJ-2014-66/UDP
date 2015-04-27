@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Base64;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -108,25 +109,26 @@ public class AudioUtils {
 	}
 
 	/**
-	 * use java serialization to encode an AudioFormat as a byte array.
+	 * use java serialization and base64 encoding to encode an AudioFormat as a
+	 * byte array.
 	 * 
 	 * @param format
 	 *            the audio format to encode
 	 * @return the byte array
 	 * @throw RuntimeException if the is a problem
 	 */
-	public static byte[] audioFormat2ByteArray(AudioFormat format) {
+	public static String audioFormat2String(AudioFormat format) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos;
 		try {
 			oos = new ObjectOutputStream(baos);
 			oos.writeObject(format);
 			oos.close();
-			return baos.toByteArray();
+			return Base64.getEncoder().encodeToString(baos.toByteArray());
 		} catch (IOException ex) {
 			throw new RuntimeException("ERROR in using java serialization"
 					+ " to encode audio format to byte array." + " Details: "
-					+ ex.getMessage());
+					+ ex);
 		}
 	}
 }
