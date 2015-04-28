@@ -168,6 +168,7 @@ public class Client {
 
 					}
 				}
+				System.out.println("log_id_" + id + ": restarting audio loop");
 			}
 		} catch (IOException ex) {
 			throw new RuntimeException("ERROR exception in UDP "

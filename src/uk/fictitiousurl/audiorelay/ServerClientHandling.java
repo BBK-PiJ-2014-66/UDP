@@ -1,12 +1,17 @@
 package uk.fictitiousurl.audiorelay;
 
+import static uk.fictitiousurl.audiorelay.AudioUtils.playBack;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.LineUnavailableException;
 
 /**
  * Server-Client handling class for client-application where clients send or
@@ -103,7 +108,7 @@ public class ServerClientHandling extends Thread {
 		String strEncode = fromClient.readLine();
 		System.out.println("log_connection_id_" + id
 				+ ": audio format encoding as string '" + strEncode + "'");
-		// for the constructor need to convert string back to encoding 
+		// for the constructor need to convert string back to encoding
 		AudioFormat.Encoding encoding = null;
 		if (strEncode.equalsIgnoreCase("ALAW")) {
 			encoding = AudioFormat.Encoding.ALAW;
@@ -115,7 +120,7 @@ public class ServerClientHandling extends Thread {
 			encoding = AudioFormat.Encoding.PCM_UNSIGNED;
 		} else if (strEncode.equalsIgnoreCase("ULAW")) {
 			encoding = AudioFormat.Encoding.ULAW;
-		}			
+		}
 		float sampleRate = Float.parseFloat(fromClient.readLine());
 		int sampleSizeInBits = Integer.parseInt(fromClient.readLine());
 		int channels = Integer.parseInt(fromClient.readLine());
@@ -126,13 +131,40 @@ public class ServerClientHandling extends Thread {
 				sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
 		System.out.println("log_connection_id_" + id
 				+ ": audio format received as " + audioformat);
-		
-		
-		//while (true) { // ask for and receive audio
-			toClient.println("send");
-			
-		//}
-		
+
+		// audio data will come in via UDP
+		int serverUDPport = Ports.UDPSTART + id;
+		try (DatagramSocket serverSocket = new DatagramSocket(serverUDPport);) {
+			System.out.println("log_connection_id_" + id + ": UDP port set to "
+					+ serverUDPport);
+			byte[] receiveData = new byte[100000]; // over dimensioned
+
+			while (true) { // ask for and receive audio
+				toClient.println("send");
+				DatagramPacket receivePacket = new DatagramPacket(receiveData,
+						receiveData.length);
+				serverSocket.receive(receivePacket);
+				int bytesLength = receivePacket.getLength();
+				System.out
+						.println("FROM SERVER: got " + bytesLength + " bytes");
+				byte[] audio = new byte[bytesLength];
+				System.arraycopy(receivePacket.getData(), 0, audio, 0,
+						bytesLength);
+				
+				// Temporary for test play the audio
+				try {
+					playBack(audioformat, audio);
+				} catch (LineUnavailableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				// TODO store in buffer?
+				
+				// TODO sleep for time of this record
+
+			}
+		}
+
 	}
 
 	private void receiver() {
