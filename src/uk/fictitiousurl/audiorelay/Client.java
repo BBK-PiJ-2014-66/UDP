@@ -12,6 +12,8 @@ import java.net.UnknownHostException;
 
 import javax.sound.sampled.AudioFormat;
 
+import static  uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
+
 /**
  * The Client for client-application where clients send or receive looping
  * audio.
@@ -123,16 +125,9 @@ public class Client {
 
 		System.out.println("log_id_" + id
 				+ ": test audio 9 seconds of Bach loaded in 1 sec chunks");
-		System.out.println("log_id_" + id + ": audio format is " + audioformat);
-
-		// need to send the audioformat to the server.
-		toServer.println(audioformat.getEncoding());
-		toServer.println(audioformat.getSampleRate());
-		toServer.println(audioformat.getSampleSizeInBits());
-		toServer.println(audioformat.getChannels());
-		toServer.println(audioformat.getFrameSize());
-		toServer.println(audioformat.getFrameRate());
-		toServer.println(audioformat.isBigEndian());
+		System.out.println("log_id_" + id + ": sending audio format "
+				+ audioformat + " to server");
+		sendAudioFormatDownTCP( toServer, audioformat);
 
 		// setup UDP connection
 		try (DatagramSocket clientSocket = new DatagramSocket()) {

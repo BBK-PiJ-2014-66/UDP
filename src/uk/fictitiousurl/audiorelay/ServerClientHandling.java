@@ -1,5 +1,7 @@
 package uk.fictitiousurl.audiorelay;
 
+import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -173,8 +175,28 @@ public class ServerClientHandling extends Thread {
 
 	}
 
+	/**
+	 * Client is a receiver
+	 */
 	private void receiver() {
-		System.out.println("receiver to be written"); // TODO
+		// make sure there is some audio to send.
+		while (audioStore.getStoredAudio()==null) {
+			System.out.println("log_connection_id_" + id
+					+ ": no audio to transmit, sleep 2 seconds?");
+			try {
+				sleep(2000);
+			} catch (InterruptedException ex) {
+				System.out.println("log_connection_id_" + id
+						+ ": warning InterruptedException in sleep? " + ex);
+			}	
+		}
+		AudioFormat audioformat = audioStore.getStoredAudio().getAudioFormat();
+		System.out.println("log_connection_id_" + id
+				+ ": sending the audio format " + audioformat + " to client");
+		sendAudioFormatDownTCP( toClient, audioformat);
+
+		
+		System.out.println("receiver to be finished"); // TODO
 	}
 
 }

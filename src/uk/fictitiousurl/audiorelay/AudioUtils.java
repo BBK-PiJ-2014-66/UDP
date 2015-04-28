@@ -3,6 +3,7 @@ package uk.fictitiousurl.audiorelay;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -104,4 +105,22 @@ public class AudioUtils {
 		audioLine.close();
 
 	}
+
+	/**
+	 * Send AudioFormat down a TCP type connection
+     *
+	 * @param tcpTo the connection a PrintWriter
+	 * @param format the Audio Format to send
+	 */
+	public static void sendAudioFormatDownTCP(PrintWriter tcpTo,
+			AudioFormat format) {
+		tcpTo.println(format.getEncoding());
+		tcpTo.println(format.getSampleRate());
+		tcpTo.println(format.getSampleSizeInBits());
+		tcpTo.println(format.getChannels());
+		tcpTo.println(format.getFrameSize());
+		tcpTo.println(format.getFrameRate());
+		tcpTo.println(format.isBigEndian());
+	}
+	
 }
