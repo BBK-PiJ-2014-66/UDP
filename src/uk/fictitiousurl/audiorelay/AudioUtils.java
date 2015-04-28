@@ -1,5 +1,6 @@
 package uk.fictitiousurl.audiorelay;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -107,10 +108,14 @@ public class AudioUtils {
 	}
 
 	/**
-	 * Send AudioFormat down a TCP type connection
-     *
-	 * @param tcpTo the connection a PrintWriter
-	 * @param format the Audio Format to send
+	 * Send AudioFormat down a TCP type connection, so it can be decoded by
+	 * {@link #receiveAudioFormatFromTCP(BufferedReader)
+	 * receiveAudioFormatFromTCP}
+	 *
+	 * @param tcpTo
+	 *            the connection a PrintWriter
+	 * @param format
+	 *            the Audio Format to send
 	 */
 	public static void sendAudioFormatDownTCP(PrintWriter tcpTo,
 			AudioFormat format) {
@@ -122,5 +127,42 @@ public class AudioUtils {
 		tcpTo.println(format.getFrameRate());
 		tcpTo.println(format.isBigEndian());
 	}
-	
+
+	/**
+	 * Receive AudioFormat from a TCP type connection as sent by
+	 * {@link #sendAudioFormatDownTCP(PrintWriter, AudioFormat)
+	 * sendAudioFormatDownTCP}
+	 * 
+	 * @param tcpFrom
+	 *            the TCP type connection
+	 * @return the AudioFormat
+	 * @throws IOException
+	 *             if there is a problem
+	 */
+	public static AudioFormat receiveAudioFormatFromTCP(BufferedReader tcpFrom)
+			throws IOException {
+		String strEncode = tcpFrom.readLine();
+		// for the constructor need to convert string back to encoding
+		AudioFormat.Encoding encoding = null;
+		if (strEncode.equalsIgnoreCase("ALAW")) {
+			encoding = AudioFormat.Encoding.ALAW;
+		} else if (strEncode.equalsIgnoreCase("PCM_FLOAT")) {
+			encoding = AudioFormat.Encoding.PCM_FLOAT;
+		} else if (strEncode.equalsIgnoreCase("PCM_SIGNED")) {
+			encoding = AudioFormat.Encoding.PCM_SIGNED;
+		} else if (strEncode.equalsIgnoreCase("PCM_UNSIGNED")) {
+			encoding = AudioFormat.Encoding.PCM_UNSIGNED;
+		} else if (strEncode.equalsIgnoreCase("ULAW")) {
+			encoding = AudioFormat.Encoding.ULAW;
+		}
+		float sampleRate = Float.parseFloat(tcpFrom.readLine());
+		int sampleSizeInBits = Integer.parseInt(tcpFrom.readLine());
+		int channels = Integer.parseInt(tcpFrom.readLine());
+		int frameSize = Integer.parseInt(tcpFrom.readLine());
+		float frameRate = Float.parseFloat(tcpFrom.readLine());
+		boolean bigEndian = Boolean.parseBoolean(tcpFrom.readLine());
+		AudioFormat audioformat = new AudioFormat(encoding, sampleRate,
+				sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
+		return audioformat;
+	}
 }

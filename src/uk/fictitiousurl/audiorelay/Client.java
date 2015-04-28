@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 
 import javax.sound.sampled.AudioFormat;
 
+import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
 import static  uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
 
 /**
@@ -94,6 +95,8 @@ public class Client {
 			System.out.println("log_id_" + id + ": mode is " + mode);
 			if (mode == Mode.SENDER) {
 				sender();
+			} else {
+				receiver();
 			}
 
 		} catch (UnknownHostException ex) {
@@ -112,13 +115,16 @@ public class Client {
 
 	}
 
+
+	/**
+	 * The client is a sender
+	 */
 	private void sender() {
 		// Load test audio data 9 seconds of Bach
 		AudioRecord sounds[] = new AudioRecord[9];
 		for (int ic = 0; ic < 9; ic++) {
 			sounds[ic] = new AudioRecord("./audioFiles/Bach" + (ic + 1)
 					+ ".wav");
-
 		}
 
 		AudioFormat audioformat = sounds[0].getAudioFormat();
@@ -169,8 +175,21 @@ public class Client {
 			throw new RuntimeException("ERROR exception in UDP "
 					+ "connection. Details: " + ex);
 		}
+	}
 
-		// now Open a UDP connection to the Server
+	/**
+	 *  the client is a receiver so will get and play audio.
+	 *  
+	 * @throws IOException if there is a problem
+	 */
+	private void receiver() throws IOException {
+		//  get the audio format from sender
+		AudioFormat audioformat = receiveAudioFormatFromTCP(fromServer);
+		System.out.println("log_id_" + id
+				+ ": audio format received as " + audioformat);
+		
+		// TODO get the audio and play it back
 
 	}
+
 }

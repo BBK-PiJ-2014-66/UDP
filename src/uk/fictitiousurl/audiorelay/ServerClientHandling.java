@@ -1,6 +1,7 @@
 package uk.fictitiousurl.audiorelay;
 
 import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
+import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -106,31 +107,8 @@ public class ServerClientHandling extends Thread {
 	 * @throws IOException
 	 */
 	private void sender() throws IOException {
-		// must first get the audio format from sender
-		String strEncode = fromClient.readLine();
-		System.out.println("log_connection_id_" + id
-				+ ": audio format encoding as string '" + strEncode + "'");
-		// for the constructor need to convert string back to encoding
-		AudioFormat.Encoding encoding = null;
-		if (strEncode.equalsIgnoreCase("ALAW")) {
-			encoding = AudioFormat.Encoding.ALAW;
-		} else if (strEncode.equalsIgnoreCase("PCM_FLOAT")) {
-			encoding = AudioFormat.Encoding.PCM_FLOAT;
-		} else if (strEncode.equalsIgnoreCase("PCM_SIGNED")) {
-			encoding = AudioFormat.Encoding.PCM_SIGNED;
-		} else if (strEncode.equalsIgnoreCase("PCM_UNSIGNED")) {
-			encoding = AudioFormat.Encoding.PCM_UNSIGNED;
-		} else if (strEncode.equalsIgnoreCase("ULAW")) {
-			encoding = AudioFormat.Encoding.ULAW;
-		}
-		float sampleRate = Float.parseFloat(fromClient.readLine());
-		int sampleSizeInBits = Integer.parseInt(fromClient.readLine());
-		int channels = Integer.parseInt(fromClient.readLine());
-		int frameSize = Integer.parseInt(fromClient.readLine());
-		float frameRate = Float.parseFloat(fromClient.readLine());
-		boolean bigEndian = Boolean.parseBoolean(fromClient.readLine());
-		AudioFormat audioformat = new AudioFormat(encoding, sampleRate,
-				sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
+		//  get the audio format from sender
+		AudioFormat audioformat = receiveAudioFormatFromTCP(fromClient);
 		System.out.println("log_connection_id_" + id
 				+ ": audio format received as " + audioformat);
 
