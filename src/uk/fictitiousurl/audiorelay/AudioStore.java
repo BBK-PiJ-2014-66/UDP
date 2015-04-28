@@ -1,5 +1,10 @@
 package uk.fictitiousurl.audiorelay;
 
+/**
+ * Store used by Server to enable chunk of audio data to be relayed
+ * 
+ * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
+ */
 public class AudioStore {
 	private AudioRecord storedAudio = null;
 
