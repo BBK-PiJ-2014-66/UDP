@@ -1,7 +1,5 @@
 package uk.fictitiousurl.audiorelay;
 
-import static uk.fictitiousurl.audiorelay.AudioUtils.playBack;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,7 +9,6 @@ import java.net.DatagramSocket;
 import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.LineUnavailableException;
 
 /**
  * Server-Client handling class for client-application where clients send or
