@@ -1,7 +1,7 @@
 package uk.fictitiousurl.audiorelay;
 
-import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
 import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
+import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 
 import javax.sound.sampled.AudioFormat;
@@ -107,7 +108,7 @@ public class ServerClientHandling extends Thread {
 	 * @throws IOException
 	 */
 	private void sender() throws IOException {
-		//  get the audio format from sender
+		// get the audio format from sender
 		AudioFormat audioformat = receiveAudioFormatFromTCP(fromClient);
 		System.out.println("log_connection_id_" + id
 				+ ": audio format received as " + audioformat);
@@ -155,10 +156,12 @@ public class ServerClientHandling extends Thread {
 
 	/**
 	 * Client is a receiver
+	 * 
+	 * @throws IOException
 	 */
-	private void receiver() {
+	private void receiver() throws IOException {
 		// make sure there is some audio to send.
-		while (audioStore.getStoredAudio()==null) {
+		while (audioStore.getStoredAudio() == null) {
 			System.out.println("log_connection_id_" + id
 					+ ": no audio to transmit, sleep 2 seconds?");
 			try {
@@ -166,15 +169,57 @@ public class ServerClientHandling extends Thread {
 			} catch (InterruptedException ex) {
 				System.out.println("log_connection_id_" + id
 						+ ": warning InterruptedException in sleep? " + ex);
-			}	
+			}
 		}
 		AudioFormat audioformat = audioStore.getStoredAudio().getAudioFormat();
 		System.out.println("log_connection_id_" + id
 				+ ": sending the audio format " + audioformat + " to client");
-		sendAudioFormatDownTCP( toClient, audioformat);
+		sendAudioFormatDownTCP(toClient, audioformat);
 
-		
-		System.out.println("receiver to be finished"); // TODO
+		// will send audio data by UDP but first need to get a packet get the
+		// return port
+		// audio data will come in via UDP
+		int serverUDPport = Ports.UDPSTART + id;
+		try (DatagramSocket serverSocket = new DatagramSocket(serverUDPport);) {
+			System.out.println("log_connection_id_" + id + ": UDP port set to "
+					+ serverUDPport);
+			byte[] receiveData = new byte[1024];
+			DatagramPacket receivePacket = new DatagramPacket(receiveData,
+					receiveData.length);
+			serverSocket.receive(receivePacket);
+			// get an instruction from the client. This will be "HELLO"
+			String instruction = new String(receivePacket.getData());
+			instruction = instruction.trim(); // trim of whitespace
+			InetAddress IPAddress = receivePacket.getAddress();
+			int port = receivePacket.getPort();
+
+			System.out.println("log_connection_id_" + id
+					+ ": UDP instruction: '" + instruction + "' from IP: "
+					+ IPAddress + " port: " + port
+					+ " so can send UDP to client.");
+
+			while (true) { // infinite loop
+				instruction = fromClient.readLine();
+				if (instruction.equals("send")) {
+					byte[] sendData = audioStore.getStoredAudio().getBytes();
+					DatagramPacket sendPacket = new DatagramPacket(sendData,
+							sendData.length, IPAddress, port);
+					serverSocket.send(sendPacket);
+
+					System.out.println("log_connection_id_" + id
+							+ ": received \"send\", so sent " + sendData.length
+							+ " bytes audio data.");
+				} else {
+					throw new RuntimeException("ERROR unrecognized"
+							+ "TCP instruction from client = '" + instruction
+							+ "'");
+
+				}
+
+			}
+
+		}
+
 	}
 
 }

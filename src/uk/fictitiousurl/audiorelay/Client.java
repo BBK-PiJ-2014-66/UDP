@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 import javax.sound.sampled.AudioFormat;
 
 import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
-import static  uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
+import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
 
 /**
  * The Client for client-application where clients send or receive looping
@@ -115,7 +115,6 @@ public class Client {
 
 	}
 
-
 	/**
 	 * The client is a sender
 	 */
@@ -133,7 +132,7 @@ public class Client {
 				+ ": test audio 9 seconds of Bach loaded in 1 sec chunks");
 		System.out.println("log_id_" + id + ": sending audio format "
 				+ audioformat + " to server");
-		sendAudioFormatDownTCP( toServer, audioformat);
+		sendAudioFormatDownTCP(toServer, audioformat);
 
 		// setup UDP connection
 		try (DatagramSocket clientSocket = new DatagramSocket()) {
@@ -178,17 +177,50 @@ public class Client {
 	}
 
 	/**
-	 *  the client is a receiver so will get and play audio.
-	 *  
-	 * @throws IOException if there is a problem
+	 * the client is a receiver so will get and play audio.
+	 * 
+	 * @throws IOException
+	 *             if there is a problem
 	 */
 	private void receiver() throws IOException {
-		//  get the audio format from sender
+		// get the audio format from sender
 		AudioFormat audioformat = receiveAudioFormatFromTCP(fromServer);
-		System.out.println("log_id_" + id
-				+ ": audio format received as " + audioformat);
-		
-		// TODO get the audio and play it back
+		System.out.println("log_id_" + id + ": audio format received as "
+				+ audioformat);
+		// setup UDP connection
+		try (DatagramSocket clientSocket = new DatagramSocket()) {
+			InetAddress IPAddress = InetAddress.getByName(hostName);
+			int serverUDPport = Ports.UDPSTART + id;
+			System.out.println("log_id_" + id + ": UDP connection to "
+					+ IPAddress + " port number " + serverUDPport);
+
+			// send "HELLO" to let Server know the return IP and socket
+			byte[] sendData = "HELLO".getBytes();
+			DatagramPacket sendPacket = new DatagramPacket(sendData,
+					sendData.length, IPAddress, serverUDPport);
+			clientSocket.send(sendPacket);
+
+			byte[] receiveData = new byte[100000]; // to receive audio byte
+													// array
+
+			while (true) {
+				// tell Server to send next audio chunk
+				toServer.println("send");
+
+				DatagramPacket receivePacket = new DatagramPacket(receiveData,
+						receiveData.length);
+				clientSocket.receive(receivePacket);
+				int bytesLength = receivePacket.getLength();
+				byte[] audio = new byte[bytesLength];
+				System.arraycopy(receivePacket.getData(), 0, audio, 0,
+						bytesLength);
+				System.out.println("log_id_" + id
+						+ " received new audio chunk so play it");
+				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
+				receivedAR.play();
+			}
+
+		}
 
 	}
 
