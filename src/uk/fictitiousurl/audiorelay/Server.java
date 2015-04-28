@@ -11,6 +11,11 @@ import java.net.Socket;
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  */
 public class Server {
+	
+	/**
+	 * store for the audio information to be relayed.
+	 */
+	private AudioStore audioStore;
 
 
 	public static void main(String[] args) {
@@ -19,6 +24,8 @@ public class Server {
 	}
 
 	public void launch() {
+		
+		audioStore = new AudioStore();
 		try {
 			@SuppressWarnings("resource") // never close signalSocket
 			ServerSocket signalSocket = new ServerSocket(Ports.SIGNAL);
@@ -30,7 +37,7 @@ public class Server {
 				System.out.println("log: client " + connectionNumb
 						+ " has connected");
 				// launch thread to handle this connection
-				new ServerClientHandling( clientSocket, connectionNumb).start();
+				new ServerClientHandling( clientSocket, connectionNumb, audioStore).start();
 				connectionNumb++;
 			}
 		} catch (IOException ex) {

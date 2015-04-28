@@ -24,6 +24,7 @@ import javax.sound.sampled.AudioFormat;
 public class ServerClientHandling extends Thread {
 	private Socket signalSocket = null;
 	private int id;
+	private AudioStore audioStore;
 	/**
 	 * to get text instructions from the client
 	 */
@@ -33,10 +34,12 @@ public class ServerClientHandling extends Thread {
 	 */
 	private PrintWriter toClient;
 
-	public ServerClientHandling(Socket signalSocket, int id) {
+	public ServerClientHandling(Socket signalSocket, int id,
+			AudioStore audioStore) {
 		super("ServerThread");
 		this.signalSocket = signalSocket;
 		this.id = id;
+		this.audioStore = audioStore;
 	}
 
 	public void run() {
@@ -137,24 +140,34 @@ public class ServerClientHandling extends Thread {
 			byte[] receiveData = new byte[100000]; // over dimensioned
 
 			while (true) { // ask for and receive audio
+				System.out.println("log_connection_id_" + id
+						+ ": ask for new chunk of audio");
 				toClient.println("send");
 				DatagramPacket receivePacket = new DatagramPacket(receiveData,
 						receiveData.length);
 				serverSocket.receive(receivePacket);
 				int bytesLength = receivePacket.getLength();
-				System.out
-						.println("FROM SERVER: got " + bytesLength + " bytes");
 				byte[] audio = new byte[bytesLength];
 				System.arraycopy(receivePacket.getData(), 0, audio, 0,
 						bytesLength);
-				
-				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
-				// Temporary for test play the audio
-				receivedAR.play();
-				// TODO store in buffer?
-				
-				// TODO sleep for time of this record
 
+				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
+				// store audio in audioStore
+				audioStore.setStoredAudio(receivedAR);
+				System.out.println("log_connection_id_" + id
+						+ ": received and stored " + bytesLength
+						+ " bytes audio chunk");
+				// sleep for the length of the audio Recording
+				int duration = receivedAR.getDurationInMilliSecs();
+				System.out.println("log_connection_id_" + id
+						+ ": sleep for duration of the audio chunk = "
+						+ duration + " millisecs");
+				try {
+					sleep(duration);
+				} catch (InterruptedException ex) {
+					System.out.println("log_connection_id_" + id
+							+ ": warning InterruptedException in sleep? " + ex);
+				}
 			}
 		}
 

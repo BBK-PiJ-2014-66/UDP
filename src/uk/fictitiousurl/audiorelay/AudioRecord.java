@@ -80,5 +80,14 @@ public class AudioRecord {
 		}
 
 	}
+	
+	/**
+	 * return the duration of the clip in milliseconds
+	 * @return the duration in milliseconds
+	 */
+	public int getDurationInMilliSecs() {
+		double secs = bytes.length/(audioFormat.getFrameSize()*audioFormat.getFrameRate());
+		return (int) (1000*secs);
+	}
 
 }
