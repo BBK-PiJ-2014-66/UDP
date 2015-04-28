@@ -95,14 +95,14 @@ public class ServerClientHandling extends Thread {
 	 * the client is a sender.
 	 * @throws IOException 
 	 */
-	public void sender() throws IOException {
+	private void sender() throws IOException {
 		// must first get the audio format back
 		String tempAF = fromClient.readLine();
 		System.out.println("debug string audioformat" + tempAF);
 		System.out.println("sender to be written"); // TODO
 	}
 
-	public void receiver() {
+	private void receiver() {
 		System.out.println("receiver to be written"); // TODO
 	}
 
