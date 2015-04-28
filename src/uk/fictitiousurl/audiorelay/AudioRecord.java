@@ -36,7 +36,17 @@ public class AudioRecord {
 			throw new RuntimeException("ERROR reading audio record from file "
 					+ fileName + " details: " + ex.getMessage());
 		}
-
+	}
+	
+	/**
+	 * construct an audio record from an audioFormat and byte array. 
+	 * 
+	 * @param audioFormat the audio format
+	 * @param bytes the byte array
+	 */
+	public AudioRecord(  AudioFormat audioFormat, byte[] bytes) {
+		this.audioFormat = audioFormat;
+		this.bytes = bytes;
 	}
 
 	/**

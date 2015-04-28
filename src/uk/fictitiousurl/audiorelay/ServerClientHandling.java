@@ -151,13 +151,9 @@ public class ServerClientHandling extends Thread {
 				System.arraycopy(receivePacket.getData(), 0, audio, 0,
 						bytesLength);
 				
+				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
 				// Temporary for test play the audio
-				try {
-					playBack(audioformat, audio);
-				} catch (LineUnavailableException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				receivedAR.play();
 				// TODO store in buffer?
 				
 				// TODO sleep for time of this record
