@@ -9,8 +9,6 @@ import java.net.UnknownHostException;
 
 import javax.sound.sampled.AudioFormat;
 
-import static uk.fictitiousurl.audiorelay.AudioUtils.audioFormat2String;
-
 /**
  * The Client for client-application where clients send or receive looping
  * audio.
@@ -124,8 +122,6 @@ public class Client {
 		System.out.println("log_id_" + id + ": audio format is " + audioformat);
 
 		// need to send the audioformat to the server. 
-		// Do so by using Java Serialization to convert to a String
-		toServer.println(audioFormat2String(audioformat));
 		
 
 	}
