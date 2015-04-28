@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import javax.sound.sampled.AudioFormat;
+
 /**
  * Server-Client handling class for client-application where clients send or
  * receive looping audio.
@@ -25,7 +27,7 @@ public class ServerClientHandling extends Thread {
 	 */
 	private BufferedReader fromClient;
 	/**
-	 *  to send replies to the client 
+	 * to send replies to the client
 	 */
 	private PrintWriter toClient;
 
@@ -93,13 +95,39 @@ public class ServerClientHandling extends Thread {
 
 	/**
 	 * the client is a sender.
-	 * @throws IOException 
+	 * 
+	 * @throws IOException
 	 */
 	private void sender() throws IOException {
-		// must first get the audio format back
-		String tempAF = fromClient.readLine();
-		System.out.println("debug string audioformat" + tempAF);
-		System.out.println("sender to be written"); // TODO
+		// must first get the audio format from sender
+		String strEncode = fromClient.readLine();
+		System.out.println("log_connection_id_" + id
+				+ ": audio format encoding as string '" + strEncode + "'");
+		// for the constructor need to convert string back to encoding 
+		AudioFormat.Encoding encoding = null;
+		if (strEncode.equalsIgnoreCase("ALAW")) {
+			encoding = AudioFormat.Encoding.ALAW;
+		} else if (strEncode.equalsIgnoreCase("PCM_FLOAT")) {
+			encoding = AudioFormat.Encoding.PCM_FLOAT;
+		} else if (strEncode.equalsIgnoreCase("PCM_SIGNED")) {
+			encoding = AudioFormat.Encoding.PCM_SIGNED;
+		} else if (strEncode.equalsIgnoreCase("PCM_UNSIGNED")) {
+			encoding = AudioFormat.Encoding.PCM_UNSIGNED;
+		} else if (strEncode.equalsIgnoreCase("ULAW")) {
+			encoding = AudioFormat.Encoding.ULAW;
+		}			
+		float sampleRate = Float.parseFloat(fromClient.readLine());
+		int sampleSizeInBits = Integer.parseInt(fromClient.readLine());
+		int channels = Integer.parseInt(fromClient.readLine());
+		int frameSize = Integer.parseInt(fromClient.readLine());
+		float frameRate = Float.parseFloat(fromClient.readLine());
+		boolean bigEndian = Boolean.parseBoolean(fromClient.readLine());
+		AudioFormat audioformat = new AudioFormat(encoding, sampleRate,
+				sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
+		System.out.println("log_connection_id_" + id
+				+ ": audio format received as " + audioformat);
+
+		System.out.println("sender to be finished"); // TODO
 	}
 
 	private void receiver() {

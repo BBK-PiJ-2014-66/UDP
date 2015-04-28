@@ -122,7 +122,13 @@ public class Client {
 		System.out.println("log_id_" + id + ": audio format is " + audioformat);
 
 		// need to send the audioformat to the server. 
+		toServer.println(audioformat.getEncoding());
+		toServer.println(audioformat.getSampleRate());
+		toServer.println(audioformat.getSampleSizeInBits());
+		toServer.println(audioformat.getChannels());
+		toServer.println(audioformat.getFrameSize());
+		toServer.println(audioformat.getFrameRate());
+		toServer.println(audioformat.isBigEndian());
 		
-
 	}
 }
