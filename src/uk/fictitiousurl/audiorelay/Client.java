@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -26,6 +29,7 @@ public class Client {
 
 	private PrintWriter toServer;
 	private BufferedReader fromServer;
+	private String hostName;
 
 	/**
 	 * The user can specify an optional hostname as a command line argument. If
@@ -35,27 +39,28 @@ public class Client {
 	 *            a single value the hostname to connect to.
 	 */
 	public static void main(String[] args) {
-		String hostname = "localhost";
+		String hName = "localhost";
 		if (args.length == 1) {
-			hostname = args[0];
+			hName = args[0];
 		} else if (args.length != 0) {
 			System.err.println("Usage: java Client <optional host name>");
 			System.exit(1);
 		}
 
 		Client theClient = new Client();
-		theClient.launch(hostname);
+		theClient.launch(hName);
 	}
 
-	public void launch(String hostname) {
+	public void launch(String hName) {
+		hostName = hName;
 		// First setup the signal communication socket, writer and reader
 		Mode mode;
-		try (Socket clientSocket = new Socket(hostname, Ports.SIGNAL);) {
+		try (Socket clientSocket = new Socket(hostName, Ports.SIGNAL);) {
 			toServer = new PrintWriter(clientSocket.getOutputStream(), true);
 			fromServer = new BufferedReader(new InputStreamReader(
 					clientSocket.getInputStream()));
 
-			System.out.println("log: connected to host " + hostname
+			System.out.println("log: connected to host " + hostName
 					+ " port number " + Ports.SIGNAL);
 			// ask for ID
 			System.out.println("log: asking for ID");
@@ -107,21 +112,20 @@ public class Client {
 
 	private void sender() {
 		// Load test audio data 9 seconds of Bach
-		AudioRecord Sounds[] = new AudioRecord[9];
+		AudioRecord sounds[] = new AudioRecord[9];
 		for (int ic = 0; ic < 9; ic++) {
-			Sounds[ic] = new AudioRecord("./audioFiles/Bach" + (ic + 1)
+			sounds[ic] = new AudioRecord("./audioFiles/Bach" + (ic + 1)
 					+ ".wav");
 
 		}
 
-		
-		AudioFormat audioformat = Sounds[0].getAudioFormat();
+		AudioFormat audioformat = sounds[0].getAudioFormat();
 
 		System.out.println("log_id_" + id
 				+ ": test audio 9 seconds of Bach loaded in 1 sec chunks");
 		System.out.println("log_id_" + id + ": audio format is " + audioformat);
 
-		// need to send the audioformat to the server. 
+		// need to send the audioformat to the server.
 		toServer.println(audioformat.getEncoding());
 		toServer.println(audioformat.getSampleRate());
 		toServer.println(audioformat.getSampleSizeInBits());
@@ -129,6 +133,48 @@ public class Client {
 		toServer.println(audioformat.getFrameSize());
 		toServer.println(audioformat.getFrameRate());
 		toServer.println(audioformat.isBigEndian());
-		
+
+		// setup UDP connection
+		try (DatagramSocket clientSocket = new DatagramSocket()) {
+			InetAddress IPAddress = InetAddress.getByName(hostName);
+			int serverUDPport = Ports.UDPSTART + id;
+			System.out.println("log_id_" + id + ": UDP connection to "
+					+ IPAddress + " port number " + serverUDPport);
+			while (true) { // infinite loop
+				for (AudioRecord sound : sounds) { // loop thru the audio
+					// wait for server to send a "send" instruction
+					String instruction;
+					try {
+						instruction = fromServer.readLine();
+					} catch (IOException ex) {
+						throw new RuntimeException(
+								"ERROR exception in getting "
+										+ "TCP instruction from server. Details: "
+										+ ex);
+					}
+					if (instruction.equals("send")) {
+						byte[] sendData = sound.getBytes();
+						DatagramPacket sendPacket = new DatagramPacket(
+								sendData, sendData.length, IPAddress,
+								serverUDPport);
+						clientSocket.send(sendPacket);
+
+						System.out.println("log_id_" + id + ": sent "
+								+ sendData.length + " bytes audio data.");
+					} else {
+						throw new RuntimeException("ERROR unrecognized"
+								+ "TCP instruction from server = '"
+								+ instruction + "'");
+
+					}
+				}
+			}
+		} catch (IOException ex) {
+			throw new RuntimeException("ERROR exception in UDP "
+					+ "connection. Details: " + ex);
+		}
+
+		// now Open a UDP connection to the Server
+
 	}
 }

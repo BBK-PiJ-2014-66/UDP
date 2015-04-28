@@ -126,8 +126,13 @@ public class ServerClientHandling extends Thread {
 				sampleSizeInBits, channels, frameSize, frameRate, bigEndian);
 		System.out.println("log_connection_id_" + id
 				+ ": audio format received as " + audioformat);
-
-		System.out.println("sender to be finished"); // TODO
+		
+		
+		//while (true) { // ask for and receive audio
+			toClient.println("send");
+			
+		//}
+		
 	}
 
 	private void receiver() {
