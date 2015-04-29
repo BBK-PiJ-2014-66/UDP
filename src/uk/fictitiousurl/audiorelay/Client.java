@@ -160,7 +160,8 @@ public class Client {
 						clientSocket.send(sendPacket);
 
 						System.out.println("log_id_" + id + ": sent "
-								+ sendData.length + " bytes audio data.");
+								+ sendData.length + " bytes audio data."
+								+ " hashcode " + sound.hashCode());
 					} else {
 						throw new RuntimeException("ERROR unrecognized"
 								+ "TCP instruction from server = '"
@@ -214,9 +215,11 @@ public class Client {
 				byte[] audio = new byte[bytesLength];
 				System.arraycopy(receivePacket.getData(), 0, audio, 0,
 						bytesLength);
-				System.out.println("log_id_" + id
-						+ " received new audio chunk so play it");
 				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
+				System.out.println("log_id_" + id
+						+ " received new audio chunk, hashcode "
+						+ receivedAR.hashCode() + " . Now play this.");
+
 				receivedAR.play();
 			}
 
