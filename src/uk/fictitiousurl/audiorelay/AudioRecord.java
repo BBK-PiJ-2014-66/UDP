@@ -5,6 +5,7 @@ import static uk.fictitiousurl.audiorelay.AudioUtils.audioFileToByteArray;
 import static uk.fictitiousurl.audiorelay.AudioUtils.playBack;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.LineUnavailableException;
@@ -89,5 +90,36 @@ public class AudioRecord {
 		double secs = bytes.length/(audioFormat.getFrameSize()*audioFormat.getFrameRate());
 		return (int) (1000*secs);
 	}
+
+
+	/**
+	 * hashCode uses just byte array and ignores format (a bit limited)
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(bytes);
+		return result;
+	}
+
+	/**
+	 * equals uses just byte array and ignores format (a bit limited)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof AudioRecord))
+			return false;
+		AudioRecord other = (AudioRecord) obj;
+		if (!Arrays.equals(bytes, other.bytes))
+			return false;
+		return true;
+	}
+	
+	
 
 }
