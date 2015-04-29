@@ -8,12 +8,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import javax.sound.sampled.AudioFormat;
-
-import com.sun.javafx.collections.MappingChange.Map;
 
 import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
 import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
@@ -215,19 +214,30 @@ public class Client {
 
 				DatagramPacket receivePacket = new DatagramPacket(receiveData,
 						receiveData.length);
-				clientSocket.receive(receivePacket);
-				int bytesLength = receivePacket.getLength();
-				byte[] audio = new byte[bytesLength];
-				System.arraycopy(receivePacket.getData(), 0, audio, 0,
-						bytesLength);
-				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
-				long endTime = System.currentTimeMillis();
-				System.out.println("log_id_" + id
-						+ " received new audio chunk, sequence "
-						+ hashcode2sequence(receivedAR.hashCode())
-						+ " transmission delay " + (endTime - startTime)
-						+ " millisecs . Now play chunk.");
-				receivedAR.play();
+				// set a socket timeout of 200 millisecs
+				clientSocket.setSoTimeout(200);
+				try {
+					clientSocket.receive(receivePacket);
+					int bytesLength = receivePacket.getLength();
+					byte[] audio = new byte[bytesLength];
+					System.arraycopy(receivePacket.getData(), 0, audio, 0,
+							bytesLength);
+					AudioRecord receivedAR = new AudioRecord(audioformat, audio);
+					long endTime = System.currentTimeMillis();
+					System.out.println("log_id_" + id
+							+ " received new audio chunk, sequence "
+							+ hashcode2sequence(receivedAR.hashCode())
+							+ " . Now play chunk.");
+					receivedAR.play();
+					long playTime =  System.currentTimeMillis() -  endTime;
+					System.out.println("log_id_" + id
+							+ " transmission time " + (endTime - startTime) +
+							" millisecs. playing time " + playTime + " millisecs");
+
+				} catch (SocketTimeoutException ex) {
+					System.out.println("log_id_" + id
+							+ " SocketTimeoutException: " + ex);
+				}
 			}
 
 		}
