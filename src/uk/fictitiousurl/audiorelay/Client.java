@@ -209,6 +209,7 @@ public class Client {
 													// array
 
 			while (true) {
+				long startTime = System.currentTimeMillis();
 				// tell Server to send next audio chunk
 				toServer.println("send");
 
@@ -220,10 +221,12 @@ public class Client {
 				System.arraycopy(receivePacket.getData(), 0, audio, 0,
 						bytesLength);
 				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
+				long endTime = System.currentTimeMillis();
 				System.out.println("log_id_" + id
 						+ " received new audio chunk, sequence "
-						+ hashcode2sequence(receivedAR.hashCode()) + " . Now play this.");
-
+						+ hashcode2sequence(receivedAR.hashCode())
+						+ " transmission delay " + (endTime - startTime)
+						+ " millisecs . Now play chunk.");
 				receivedAR.play();
 			}
 
