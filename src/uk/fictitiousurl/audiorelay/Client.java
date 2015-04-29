@@ -9,8 +9,11 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 
 import javax.sound.sampled.AudioFormat;
+
+import com.sun.javafx.collections.MappingChange.Map;
 
 import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
 import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
@@ -161,7 +164,8 @@ public class Client {
 
 						System.out.println("log_id_" + id + ": sent "
 								+ sendData.length + " bytes audio data."
-								+ " hashcode " + sound.hashCode());
+								+ " sequence "
+								+ hashcode2sequence(sound.hashCode()));
 					} else {
 						throw new RuntimeException("ERROR unrecognized"
 								+ "TCP instruction from server = '"
@@ -217,14 +221,38 @@ public class Client {
 						bytesLength);
 				AudioRecord receivedAR = new AudioRecord(audioformat, audio);
 				System.out.println("log_id_" + id
-						+ " received new audio chunk, hashcode "
-						+ receivedAR.hashCode() + " . Now play this.");
+						+ " received new audio chunk, sequence "
+						+ hashcode2sequence(receivedAR.hashCode()) + " . Now play this.");
 
 				receivedAR.play();
 			}
 
 		}
 
+	}
+
+	/**
+	 * Used for testing to convert hashcode of bytes to an int sequence number
+	 * 
+	 * @param hashcode
+	 * @return
+	 */
+	private static int hashcode2sequence(int hashcode) {
+		HashMap<Integer, Integer> mapHash2Sequence = new HashMap<Integer, Integer>();
+		// the hash code for "9 seconds of Bach"
+		mapHash2Sequence.put(-365997042, 1);
+		mapHash2Sequence.put(182636277, 2);
+		mapHash2Sequence.put(-1521414040, 3);
+		mapHash2Sequence.put(1359779218, 4);
+		mapHash2Sequence.put(1448440695, 5);
+		mapHash2Sequence.put(-914633892, 6);
+		mapHash2Sequence.put(1113035881, 7);
+		mapHash2Sequence.put(-1877807058, 8);
+		mapHash2Sequence.put(1578275581, 9);
+		if (mapHash2Sequence.containsKey(hashcode)) {
+			return mapHash2Sequence.get(hashcode);
+		}
+		return -1;
 	}
 
 }
