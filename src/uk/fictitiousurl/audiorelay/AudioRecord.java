@@ -12,20 +12,29 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- * Object to store an audio "record": a short audio recording read from a file,
- * or transmitted using UDP.
+ * Class to store audio "records" or "chunks", meaning a short audio recording
+ * read from a file, or transmitted using UDP.
  *
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  */
 public class AudioRecord {
-	private byte[] bytes;
+
+	/**
+	 * A chunk is defined by an AudioFormat together with a byte array.
+	 */
 	private AudioFormat audioFormat;
 
 	/**
-	 * construct audio record from a file
+	 * A chunk is defined by an AudioFormat together with a byte array.
+	 */
+	private byte[] bytes;
+
+	/**
+	 * construct AudioRecord object from a file
 	 * 
-	 * @param filename
-	 *            the filename including any path
+	 * @param fileName
+	 *            The name for the file including any path.
+	 * 
 	 * @throws RuntimeException
 	 *             if there is a problem opening or reading from the file
 	 */
@@ -38,14 +47,16 @@ public class AudioRecord {
 					+ fileName + " details: " + ex.getMessage());
 		}
 	}
-	
+
 	/**
-	 * construct an audio record from an audioFormat and byte array. 
+	 * construct an audio record from an audioFormat and byte array.
 	 * 
-	 * @param audioFormat the audio format
-	 * @param bytes the byte array
+	 * @param audioFormat
+	 *            the audio format
+	 * @param bytes
+	 *            the byte array
 	 */
-	public AudioRecord(  AudioFormat audioFormat, byte[] bytes) {
+	public AudioRecord(AudioFormat audioFormat, byte[] bytes) {
 		this.audioFormat = audioFormat;
 		this.bytes = bytes;
 	}
@@ -81,16 +92,17 @@ public class AudioRecord {
 		}
 
 	}
-	
+
 	/**
-	 * return the duration of the clip in milliseconds
+	 * return the duration of the chunk in milliseconds
+	 * 
 	 * @return the duration in milliseconds
 	 */
 	public int getDurationInMilliSecs() {
-		double secs = bytes.length/(audioFormat.getFrameSize()*audioFormat.getFrameRate());
-		return (int) (1000*secs);
+		double secs = bytes.length
+				/ (audioFormat.getFrameSize() * audioFormat.getFrameRate());
+		return (int) (1000 * secs);
 	}
-
 
 	/**
 	 * hashCode uses just byte array and ignores format (a bit limited)
@@ -119,7 +131,5 @@ public class AudioRecord {
 			return false;
 		return true;
 	}
-	
-	
 
 }
