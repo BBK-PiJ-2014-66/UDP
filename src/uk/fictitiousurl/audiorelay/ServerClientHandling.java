@@ -19,15 +19,32 @@ import javax.sound.sampled.AudioFormat;
  * receive looping audio.
  * 
  * <br>
- * based on ideas from
- * http://docs.oracle.com/javase/tutorial/networking/sockets/
- * examples/KKMultiServerThread.java
+ * based on ideas from <a href=
+ * "http://docs.oracle.com/javase/tutorial/networking/sockets/examples/KKMultiServerThread.java"
+ * target="_blank">
+ * http://docs.oracle.com/javase/tutorial/networking/sockets/examples
+ * /KKMultiServerThread.java</a> .
+ * 
  * 
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  */
 public class ServerClientHandling extends Thread {
+
+	/**
+	 * TCP server socket for this connection. Supplied to the constructor when
+	 * thread launched.
+	 */
 	private Socket signalSocket = null;
+	/**
+	 * A unique id number for this connection. Supplied to the constructor when
+	 * thread launched.
+	 */
 	private int id;
+	/**
+	 * The audioStore provides a storage space so that the thread dealing with
+	 * the sending client can store audio information to be sent out by threads
+	 * dealing with receiving clients.
+	 */
 	private AudioStore audioStore;
 	/**
 	 * to get text instructions from the client
@@ -38,6 +55,16 @@ public class ServerClientHandling extends Thread {
 	 */
 	private PrintWriter toClient;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param signalSocket
+	 *            the TCP server socket.
+	 * @param id
+	 *            an ID number unique to this thread
+	 * @param audioStore
+	 *            the audio store
+	 */
 	public ServerClientHandling(Socket signalSocket, int id,
 			AudioStore audioStore) {
 		super("ServerThread");
@@ -46,6 +73,9 @@ public class ServerClientHandling extends Thread {
 		this.audioStore = audioStore;
 	}
 
+	/**
+	 * starts the thread that deals with connection from a client.
+	 */
 	public void run() {
 		System.out.println("log_connection_id_" + id + ": starting thread");
 
@@ -103,9 +133,10 @@ public class ServerClientHandling extends Thread {
 	}
 
 	/**
-	 * the client is a sender.
+	 * deals with communication when the client is a sender.
 	 * 
 	 * @throws IOException
+	 *             if there was a problem receiving or sending information
 	 */
 	private void sender() throws IOException {
 		// get the audio format from sender
@@ -155,9 +186,10 @@ public class ServerClientHandling extends Thread {
 	}
 
 	/**
-	 * Client is a receiver
+	 * deals with communication when the client is a receiver.
 	 * 
 	 * @throws IOException
+	 *             if there was a problem receiving or sending information
 	 */
 	private void receiver() throws IOException {
 		// make sure there is some audio to send.
