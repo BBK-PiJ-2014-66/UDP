@@ -11,4 +11,9 @@ http://bbk-pij-2014-66.github.io/UDP/udp.pdf[assignment document]
 Please see the https://github.com/BBK-PiJ-2014-66/UDP/wiki[project wiki] for a detailed description of the 
 approach taken to the development, implementation and testing. 
 
+=== Code details
+
+* The directory link:src/uk/fictitiousurl/development/[src/uk/fictitiousurl/development/] contains code 
+produced during the development stage to explore the different technologies to be used, as detailed
+on the project wiki page: https://github.com/BBK-PiJ-2014-66/UDP/wiki/Development-work[Development Work].
 
