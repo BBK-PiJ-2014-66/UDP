@@ -18,8 +18,14 @@ import static uk.fictitiousurl.audiorelay.AudioUtils.receiveAudioFormatFromTCP;
 import static uk.fictitiousurl.audiorelay.AudioUtils.sendAudioFormatDownTCP;
 
 /**
- * The Client for client-application where clients send or receive looping
- * audio.
+ * The Client program for client-server application where clients either send or
+ * receive looping audio.
+ * 
+ * <p>
+ * 
+ * For details on how to run the program see <a
+ * href="https://github.com/BBK-PiJ-2014-66/UDP"
+ * target="_blank">https://github.com/BBK-PiJ-2014-66/UDP </a> .
  * 
  * 
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
@@ -32,16 +38,29 @@ public class Client {
 	 */
 	private int id = -1;
 
+	/**
+	 * TCP connection to the server
+	 */
 	private PrintWriter toServer;
+
+	/**
+	 * TCP connection from server
+	 */
 	private BufferedReader fromServer;
+
+	/**
+	 * hostname for the server (default is localhost).
+	 */
 	private String hostName;
 
 	/**
-	 * The user can specify an optional hostname as a command line argument. If
+	 * Main program
+	 * 
+	 * The user can specify an optional host name as a command line argument. If
 	 * they do not specify a value use the default value "localhost".
 	 * 
 	 * @param args
-	 *            a single value the hostname to connect to.
+	 *            a single value the host name to connect to.
 	 */
 	public static void main(String[] args) {
 		String hName = "localhost";
@@ -56,6 +75,13 @@ public class Client {
 		theClient.launch(hName);
 	}
 
+	/**
+	 * does the actual work
+	 * 
+	 * @param hName
+	 *            hostname either localhost or got as a user-specified command
+	 *            line argument
+	 */
 	public void launch(String hName) {
 		hostName = hName;
 		// First setup the signal communication socket, writer and reader
@@ -211,7 +237,8 @@ public class Client {
 				long startTime = System.currentTimeMillis();
 				// tell Server to send next audio chunk via TCP
 				toServer.println("send");
-				// also send HELLO  again to keep the UDP connection alive preventing
+				// also send HELLO again to keep the UDP connection alive
+				// preventing
 				// UDP NAT timeouts
 				clientSocket.send(sendPacket);
 
@@ -252,11 +279,12 @@ public class Client {
 	 * Used for testing to convert hashcode of bytes to an int sequence number
 	 * 
 	 * @param hashcode
-	 * @return
+	 *            an AudioRecord hashcode
+	 * @return a sequence number that is easier to be read by a human
 	 */
 	private static int hashcode2sequence(int hashcode) {
 		HashMap<Integer, Integer> mapHash2Sequence = new HashMap<Integer, Integer>();
-		// the hash code for "9 seconds of Bach"
+		// the hash codes for "9 seconds of Bach"
 		mapHash2Sequence.put(-365997042, 1);
 		mapHash2Sequence.put(182636277, 2);
 		mapHash2Sequence.put(-1521414040, 3);
