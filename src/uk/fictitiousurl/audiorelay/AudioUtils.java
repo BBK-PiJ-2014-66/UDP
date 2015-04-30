@@ -15,11 +15,21 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- * Utilities to handle reading and playing audio files.
+ * Static utilities to handle reading and playing audio files.
  *
  * @author Oliver Smart {@literal <osmart01@dcs.bbk.ac.uk>}
  */
 public class AudioUtils {
+	
+	
+	/**
+	 * AudioUtils is an uninstantiable class.
+	 */
+	private AudioUtils() {
+		throw new UnsupportedOperationException("Uninstantiable class");
+	}
+
+	
 	/**
 	 * Reads the complete contents of a small audio file into a byte array
 	 * 
@@ -28,8 +38,12 @@ public class AudioUtils {
 	 * @return byte array with the contents read from the file
 	 * 
 	 * @throws UnsupportedAudioFileException
+	 *             if there is a problem with audio format of the file not being
+	 *             supported by Java
 	 * @throws IOException
+	 *             if there is a problem reading from the file
 	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be opened
 	 */
 	public static byte[] audioFileToByteArray(String fileName)
 			throws UnsupportedAudioFileException, IOException,
@@ -49,15 +63,6 @@ public class AudioUtils {
 		audioStream.read(bytesBuffer);
 		audioStream.close();
 		return bytesBuffer;
-
-		/*
-		 * double secondsLength = audioStream.available()
-		 * /(format.getFrameSize() * format.getFrameRate());
-		 * 
-		 * System.out .println("log length of clip = " + secondsLength +
-		 * " seconds");
-		 */
-
 	}
 
 	/**
@@ -67,8 +72,12 @@ public class AudioUtils {
 	 *            the audio file
 	 * @return its audio format
 	 * @throws UnsupportedAudioFileException
+	 *             if there is a problem with audio format of the file not being
+	 *             supported by Java
 	 * @throws IOException
+	 *             if there is a problem reading from the file
 	 * @throws FileNotFoundException
+	 *             if the file does not exist or cannot be opened
 	 */
 	public static AudioFormat audioFileFormat(String fileName)
 			throws UnsupportedAudioFileException, IOException,
@@ -94,6 +103,7 @@ public class AudioUtils {
 	 * @param bytes
 	 *            byte array with the contents
 	 * @throws LineUnavailableException
+	 *             if there is a problem opening the audio line for play back.
 	 */
 	public static void playBack(AudioFormat format, byte[] bytes)
 			throws LineUnavailableException {
