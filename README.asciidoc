@@ -4,7 +4,7 @@
 == Project Details
 
 This project has succeeded in developing a simple client-server application where multiple clients can 
-connect to a server that can relay audio from a sending client to the others, as required in the 
+connect to a server that can relay looping audio from a sending client to the others that play it, as required in the 
 http://bbk-pij-2014-66.github.io/UDP/udp.pdf[assignment document]
 
 Please see the https://github.com/BBK-PiJ-2014-66/UDP/wiki[project wiki] for a detailed description of the 
