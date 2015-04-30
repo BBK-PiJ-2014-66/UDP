@@ -209,8 +209,11 @@ public class Client {
 
 			while (true) {
 				long startTime = System.currentTimeMillis();
-				// tell Server to send next audio chunk
+				// tell Server to send next audio chunk via TCP
 				toServer.println("send");
+				// also send HELLO  again to keep the UDP connection alive preventing
+				// UDP NAT timeouts
+				clientSocket.send(sendPacket);
 
 				DatagramPacket receivePacket = new DatagramPacket(receiveData,
 						receiveData.length);
@@ -229,10 +232,11 @@ public class Client {
 							+ hashcode2sequence(receivedAR.hashCode())
 							+ " . Now play chunk.");
 					receivedAR.play();
-					long playTime =  System.currentTimeMillis() -  endTime;
-					System.out.println("log_id_" + id
-							+ " transmission time " + (endTime - startTime) +
-							" millisecs. playing time " + playTime + " millisecs");
+					long playTime = System.currentTimeMillis() - endTime;
+					System.out.println("log_id_" + id + " transmission time "
+							+ (endTime - startTime)
+							+ " millisecs. playing time " + playTime
+							+ " millisecs");
 
 				} catch (SocketTimeoutException ex) {
 					System.out.println("log_id_" + id
