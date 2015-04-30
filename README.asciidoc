@@ -1,6 +1,10 @@
-# UDP
-PiJ Coursework assignment 5 - TCP and UDP
+UDP PiJ Coursework assignment 5 - TCP and UDP
+===============================================
+:Author:    Oliver Smart
+:Email:     <osmart01@dcs.bbk.ac.uk>
+:Date:      April 2015
 
-Please see the [project wiki](https://github.com/BBK-PiJ-2014-66/UDP/wiki) for notes on approach taken, testing ...
+
+Please see the (https://github.com/BBK-PiJ-2014-66/UDP/wiki)[project wiki] for notes on approach taken, testing ...
 
 
