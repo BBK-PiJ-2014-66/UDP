@@ -1,6 +1,5 @@
-# PiJ Coursework assignment 5: TCP and UDP
+== PiJ Coursework assignment 5: TCP and UDP
 
-Oliver S. Smart <osmart01@dcs.bbk.ac.uk>
 
 == Project Details
 
@@ -15,5 +14,41 @@ approach taken to the development, implementation and testing.
 
 * The directory link:src/uk/fictitiousurl/development/[src/uk/fictitiousurl/development/] contains code 
 produced during the development stage to explore the different technologies to be used, as detailed
-on the project wiki page: https://github.com/BBK-PiJ-2014-66/UDP/wiki/Development-work[Development Work].
+on the project wiki page: https://github.com/BBK-PiJ-2014-66/UDP/wiki/Development-work[Development Work]. 
+_Please note that code in the development directory is not directly used in the project_.
+* The directory link:src/uk/fictitiousurl/audiorelay[src/uk/fictitiousurl/audiorelay] contains the actual source code
+developed for the project. An online version of the JavaDoc for this can be found at 
+http://bbk-pij-2014-66.github.io/UDP/javadoc/
 
+=== How to run programs to test on a single host
+
+* Compile the source code
+* Open three new terminal windows
+* In each change directory so that your current +pwd+ contains the directory link:audioFiles[audioFiles] (containing 
+the test audio 9 seconds of Bach Cello Suite Number 1).
+* In the first terminal window run the Server program:
+
+ java -cp bin uk.fictitiousurl.audiorelay.Server
+
+* In the second terminal window run the first client that will send 9 seconds of Bach to the server in a loop:
+
+ java -cp bin uk.fictitiousurl.audiorelay.Client
+ 
+ * In the third terminal window run another client that will receive the audio from the Server and play it 
+ back using your computer's audio system:
+ 
+ java -cp bin uk.fictitiousurl.audiorelay.Client
+
+** In practice, the audio play back works well in Linux but there are some skipping issues on a Windows 8 machine. See   
+https://github.com/BBK-PiJ-2014-66/UDP/wiki/Testing-&-Improvement[project wiki page: Testing & Improvement] for details.
+
+* It is also possible to connect to Server's running on a different computer. Suppose that the Server has been started on 
+a computer on the same intranet as your workstation with an ip address 192.168.0.10, the client can be started:
+
+ java -cp bin uk.fictitiousurl.audiorelay.Client 192.168.0.10
+
+** The https://github.com/BBK-PiJ-2014-66/UDP/wiki/Testing-&-Improvement[project wiki page: Testing & Improvement]
+describes tests over intranet connections.  
+ 
+
+_Oliver S. Smart <osmart01@dcs.bbk.ac.uk>_
