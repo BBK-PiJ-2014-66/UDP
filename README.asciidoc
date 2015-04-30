@@ -1,8 +1,12 @@
-# UDP PiJ Coursework assignment 5 - TCP and UDP
+# PiJ Coursework assignment 5: TCP and UDP
 
 Oliver S. Smart <osmart01@dcs.bbk.ac.uk>
 
 == Project Details
+
+This project has succeeded in developing a simple client-server application where multiple clients can 
+connect to a server that can relay audio from a sending client to the others, as required in the 
+http://bbk-pij-2014-66.github.io/UDP/udp.pdf[assignment document]
 
 Please see the https://github.com/BBK-PiJ-2014-66/UDP/wiki[project wiki] for a detailed description of the 
 approach taken to the development, implementation and testing. 
